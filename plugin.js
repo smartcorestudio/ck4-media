@@ -9,10 +9,10 @@
         }
     };
     var types = {
+        aac: 'audio',
         flac: 'audio',
         gif: 'img',
         jpg: 'img',
-        mov: 'video',
         mp3: 'audio',
         mp4: 'video',
         oga: 'audio',
