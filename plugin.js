@@ -37,7 +37,7 @@
         requires: 'dialog,widget',
         icons: 'media',
         hidpi: true,
-        lang: 'de,en',
+        lang: 'de,en,ru',
         init: function (editor) {
             editor.widgets.add('media', {
                 button: editor.lang.media.title,
