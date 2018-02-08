@@ -53,11 +53,11 @@
                     src: ''
                 },
                 upcast: function (element) {
-                    var cond = function (el) {
+                    var crit = function (el) {
                         return el.name === 'figure' && el.hasClass('media');
                     };
 
-                    return cond(element) || tags.includes(element.name) && !element.getAscendant(cond);
+                    return crit(element) || tags.includes(element.name) && !element.getAscendant(crit);
                 },
                 init: function () {
                     var widget = this;
