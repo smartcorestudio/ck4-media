@@ -61,10 +61,11 @@
                 },
                 init: function () {
                     var widget = this;
-                    var wrapper = this.element.getName() === 'figure' && this.element.hasClass('media');
+                    var el = this.element;
+                    var wrapper = el.getName() === 'figure' && el.hasClass('media');
 
                     // Media element
-                    var media = wrapper ? this.element.findOne(tags.join(',')) : this.element;
+                    var media = wrapper ? el.findOne(tags.join(',')) : el;
 
                     if (media) {
                         ['src', 'alt'].forEach(function (name) {
@@ -75,61 +76,62 @@
                     }
 
                     // Caption element
-                    if (wrapper && !!this.element.findOne('figcaption')) {
-                        this.setData('caption', true);
+                    if (wrapper && !!el.findOne('figcaption')) {
+                        widget.setData('caption', true);
                     }
 
                     // Widget element
-                    if (this.element.hasClass(align.left)) {
-                        this.setData('align', 'left');
-                    } else if (this.element.hasClass(align.center)) {
-                        this.setData('align', 'center');
-                    } else if (this.element.hasClass(align.right)) {
-                        this.setData('align', 'right');
+                    if (el.hasClass(align.left)) {
+                        widget.setData('align', 'left');
+                    } else if (el.hasClass(align.center)) {
+                        widget.setData('align', 'center');
+                    } else if (el.hasClass(align.right)) {
+                        widget.setData('align', 'right');
                     }
                 },
                 data: function () {
+                    var el = this.element;
                     var ext = this.data.src ? this.data.src.split('.').pop() : null;
 
                     if (!ext || !types.hasOwnProperty(ext)) {
                         return;
                     }
 
-                    var caption = this.element.findOne('figcaption');
-                    var media = this.element.findOne(tags.join(','));
+                    var caption = el.findOne('figcaption');
+                    var media = el.findOne(tags.join(','));
 
                     if (media) {
                         media.remove();
                     }
 
                     if (this.data.caption) {
-                        if (this.element.getName() !== 'figure') {
-                            this.element.renameNode('figure');
-                            this.element.addClass('media');
-                            this.element.removeAttribute('src');
-                            this.element.removeAttribute('alt');
-                            this.element.removeAttribute('controls');
+                        if (el.getName() !== 'figure') {
+                            el.renameNode('figure');
+                            el.addClass('media');
+                            el.removeAttribute('src');
+                            el.removeAttribute('alt');
+                            el.removeAttribute('controls');
                         }
 
                         if (!caption) {
                             caption = new CKEDITOR.dom.element('figcaption');
-                            this.element.append(caption);
+                            el.append(caption);
                             this.initEditable('caption', editables.caption);
                         }
 
                         media = new CKEDITOR.dom.element(types[ext]);
-                        this.element.append(media, true);
+                        el.append(media, true);
                     } else {
-                        if (this.element.getName() !== types[ext]) {
-                            this.element.renameNode(types[ext]);
+                        if (el.getName() !== types[ext]) {
+                            el.renameNode(types[ext]);
                         }
 
                         if (caption) {
                             caption.remove();
                         }
 
-                        this.element.removeClass('media');
-                        media = this.element;
+                        el.removeClass('media');
+                        media = el;
                     }
 
                     // Media element
@@ -142,12 +144,12 @@
                     }
 
                     // Widget element
-                    this.element.removeClass(align.left);
-                    this.element.removeClass(align.center);
-                    this.element.removeClass(align.right);
+                    el.removeClass(align.left);
+                    el.removeClass(align.center);
+                    el.removeClass(align.right);
 
                     if (this.data.align && align.hasOwnProperty(this.data.align)) {
-                        this.element.addClass(align[this.data.align]);
+                        el.addClass(align[this.data.align]);
                     }
                 }
             });
