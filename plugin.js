@@ -54,7 +54,7 @@
                 },
                 upcast: function (element) {
                     var cond = function (el) {
-                        return el.name === 'figure' && el.hasClass('media')
+                        return el.name === 'figure' && el.hasClass('media');
                     };
 
                     return cond(element) || tags.includes(element.name) && !element.getAscendant(cond);
