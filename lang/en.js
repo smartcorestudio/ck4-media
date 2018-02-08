@@ -5,7 +5,6 @@
         alt: 'Alternative Text',
         caption: 'Caption',
         info: 'Info',
-        menu: 'Media Properties',
         title: 'Media',
         urlMissing: 'URL is missing'
     });
