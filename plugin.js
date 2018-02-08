@@ -152,15 +152,6 @@
                 }
             });
 
-            if (editor.contextMenu) {
-                editor.addMenuGroup('media');
-                editor.addMenuItem('media', {
-                    label: editor.lang.media.menu,
-                    command: 'media',
-                    group: 'media'
-                });
-            }
-
             CKEDITOR.dialog.add('media', this.path + 'dialogs/media.js');
         }
     });
