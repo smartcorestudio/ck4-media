@@ -5,7 +5,7 @@
     var editables = {
         caption: {
             selector: 'figcaption',
-            allowedContent: 'strong em'
+            allowedContent: 'br em strong sub sup u s; a[!href,target]'
         }
     };
     var types = {
