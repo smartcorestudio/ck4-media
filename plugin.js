@@ -52,12 +52,12 @@
                     caption: false,
                     src: ''
                 },
-                upcast: function (element) {
-                    var crit = function (el) {
-                        return el.name === 'figure' && el.hasClass('media');
+                upcast: function (el) {
+                    var crit = function (c) {
+                        return c.name === 'figure' && c.hasClass('media');
                     };
 
-                    return crit(element) || tags.includes(element.name) && !element.getAscendant(crit);
+                    return crit(el) || tags.includes(el.name) && !el.getAscendant(crit);
                 },
                 init: function () {
                     var widget = this;
