@@ -44,7 +44,7 @@
                 dialog: 'media',
                 template: '<figure class="media"><figcaption></figcaption></figure>',
                 editables: editables,
-                allowedContent: 'figure(!media, left, center, right); ' + tags.join(' ') + '[!src, alt, controls]; figcaption',
+                allowedContent: 'figure(!media, left, center, right); ' + tags.join(' ') + '[!src, width, height, alt, controls]; figcaption',
                 requiredContent: 'figure(media); ' + tags.join(' ') + '[src]',
                 defaults: {
                     align: '',
@@ -68,7 +68,7 @@
                     var media = wrapper ? el.findOne(tags.join(',')) : el;
 
                     if (media) {
-                        ['src', 'alt'].forEach(function (name) {
+                        ['src', 'width', 'height', 'alt'].forEach(function (name) {
                             if (media.hasAttribute(name)) {
                                 widget.setData(name, media.getAttribute(name));
                             }
@@ -108,9 +108,9 @@
                         if (el.getName() !== 'figure') {
                             el.renameNode('figure');
                             el.addClass('media');
-                            el.removeAttribute('src');
-                            el.removeAttribute('alt');
-                            el.removeAttribute('controls');
+                            ['src', 'width', 'height', 'alt', 'controls'].forEach(function (name) {
+                                el.removeAttribute(name);
+                            });
                         }
 
                         if (!caption) {
@@ -136,6 +136,14 @@
 
                     // Media element
                     media.setAttribute('src', this.data.src);
+
+                    if (this.data.width) {
+                        media.setAttribute('width', this.data.width);
+                    }
+
+                    if (this.data.height) {
+                        media.setAttribute('height', this.data.height);
+                    }
 
                     if (types[ext] === 'img') {
                         media.setAttribute('alt', this.data.alt);

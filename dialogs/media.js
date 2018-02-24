@@ -41,6 +41,35 @@
                             ]
                         },
                         {
+                            type: 'hbox',
+                            children: [
+                                {
+                                    id: 'width',
+                                    type: 'text',
+                                    width: '45px',
+                                    label: common.width,
+                                    setup: function (widget) {
+                                        this.setValue(widget.data.width);
+                                    },
+                                    commit: function (widget) {
+                                        widget.setData('width', this.getValue());
+                                    }
+                                },
+                                {
+                                    id: 'height',
+                                    type: 'text',
+                                    width: '45px',
+                                    label: common.height,
+                                    setup: function (widget) {
+                                        this.setValue(widget.data.height);
+                                    },
+                                    commit: function (widget) {
+                                        widget.setData('height', this.getValue());
+                                    }
+                                }
+                            ]
+                        },
+                        {
                             id: 'alt',
                             type: 'text',
                             label: lang.alt,
