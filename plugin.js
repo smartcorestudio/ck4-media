@@ -44,7 +44,7 @@
                 dialog: 'media',
                 template: '<figure class="media"><figcaption></figcaption></figure>',
                 editables: editables,
-                allowedContent: 'figure(!media, left, center, right); ' + tags.join(' ') + '[!src, width, height, alt, controls]; figcaption',
+                allowedContent: 'figure(!media, left, center, right); ' + tags.join(' ') + '[!src, width, height, alt, controls, allowfullscreen]; figcaption',
                 requiredContent: 'figure(media); ' + tags.join(' ') + '[src]',
                 defaults: {
                     align: '',
@@ -146,6 +146,8 @@
                         media.setAttribute('alt', this.data.alt);
                     } else if (['audio', 'video'].includes(type)) {
                         media.setAttribute('controls', true);
+                    } else {
+                        media.setAttribute('allowfullscreen', true);
                     }
 
                     // Widget element
