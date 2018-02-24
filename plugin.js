@@ -25,7 +25,7 @@
         webm: 'video',
         webp: 'img'
     };
-    var tags = [];
+    var tags = ['iframe'];
 
     Object.getOwnPropertyNames(types).forEach(function (item) {
         if (!tags.includes(types[item])) {
@@ -92,11 +92,8 @@
                 data: function () {
                     var el = this.element;
                     var ext = this.data.src ? this.data.src.split('.').pop() : null;
-
-                    if (!ext || !types.hasOwnProperty(ext)) {
-                        return;
-                    }
-
+                    var type = ext && types.hasOwnProperty(ext) ? types[ext] : 'iframe';
+                    var cls = type === 'img' ? 'image' : type;
                     var caption = el.findOne('figcaption');
                     var media = el.findOne(tags.join(','));
 
@@ -107,10 +104,8 @@
                     if (this.data.caption) {
                         if (el.getName() !== 'figure') {
                             el.renameNode('figure');
+                            el.removeAttributes();
                             el.addClass('media');
-                            ['src', 'width', 'height', 'alt', 'controls'].forEach(function (name) {
-                                el.removeAttribute(name);
-                            });
                         }
 
                         if (!caption) {
@@ -119,11 +114,12 @@
                             this.initEditable('caption', editables.caption);
                         }
 
-                        media = new CKEDITOR.dom.element(types[ext]);
+                        media = new CKEDITOR.dom.element(type);
                         el.append(media, true);
+                        el.addClass(cls);
                     } else {
-                        if (el.getName() !== types[ext]) {
-                            el.renameNode(types[ext]);
+                        if (el.getName() !== type) {
+                            el.renameNode(type);
                         }
 
                         if (caption) {
@@ -131,6 +127,7 @@
                         }
 
                         el.removeClass('media');
+                        el.removeClass(cls);
                         media = el;
                     }
 
@@ -145,9 +142,9 @@
                         media.setAttribute('height', this.data.height);
                     }
 
-                    if (types[ext] === 'img') {
+                    if (type === 'img') {
                         media.setAttribute('alt', this.data.alt);
-                    } else {
+                    } else if (['audio', 'video'].includes(type)) {
                         media.setAttribute('controls', true);
                     }
 
