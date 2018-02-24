@@ -46,7 +46,6 @@
                                 {
                                     id: 'width',
                                     type: 'text',
-                                    width: '45px',
                                     label: common.width,
                                     setup: function (widget) {
                                         this.setValue(widget.data.width);
@@ -58,7 +57,6 @@
                                 {
                                     id: 'height',
                                     type: 'text',
-                                    width: '45px',
                                     label: common.height,
                                     setup: function (widget) {
                                         this.setValue(widget.data.height);
