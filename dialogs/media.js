@@ -41,6 +41,17 @@
                             ]
                         },
                         {
+                            id: 'alt',
+                            type: 'text',
+                            label: lang.alt,
+                            setup: function (widget) {
+                                this.setValue(widget.data.alt);
+                            },
+                            commit: function (widget) {
+                                widget.setData('alt', this.getValue());
+                            }
+                        },
+                        {
                             id: 'align',
                             type: 'radio',
                             label: common.align,
@@ -55,17 +66,6 @@
                             },
                             commit: function (widget) {
                                 widget.setData('align', this.getValue());
-                            }
-                        },
-                        {
-                            id: 'alt',
-                            type: 'text',
-                            label: lang.alt,
-                            setup: function (widget) {
-                                this.setValue(widget.data.alt);
-                            },
-                            commit: function (widget) {
-                                widget.setData('alt', this.getValue());
                             }
                         },
                         {
