@@ -26,12 +26,13 @@
         webp: 'img'
     };
     var tags = ['iframe'];
+    var ext = Object.getOwnPropertyNames(types);
 
-    Object.getOwnPropertyNames(types).forEach(function (item) {
-        if (!tags.includes(types[item])) {
-            tags.push(types[item]);
+    for (var i = 0; i < ext.length; i++) {
+        if (tags.indexOf(types[ext[i]]) < 0) {
+            tags.push(types[ext[i]]);
         }
-    });
+    }
 
     CKEDITOR.plugins.add('media', {
         requires: 'dialog,widget',
@@ -57,7 +58,7 @@
                         return c.name === 'figure' && c.hasClass('media');
                     };
 
-                    return crit(el) || tags.includes(el.name) && !el.getAscendant(crit);
+                    return crit(el) || tags.indexOf(el.name) >= 0 && !el.getAscendant(crit);
                 },
                 init: function () {
                     var widget = this;
@@ -68,11 +69,13 @@
                     var media = wrapper ? el.findOne(tags.join(',')) : el;
 
                     if (media) {
-                        ['src', 'width', 'height', 'alt'].forEach(function (name) {
-                            if (media.hasAttribute(name)) {
-                                widget.setData(name, media.getAttribute(name));
+                        var attr = ['src', 'width', 'height', 'alt'];
+
+                        for (var i = 0; i < attr.length; i++) {
+                            if (media.hasAttribute(attr[i])) {
+                                widget.setData(attr[i], media.getAttribute(attr[i]));
                             }
-                        });
+                        }
                     }
 
                     // Caption element
@@ -144,7 +147,7 @@
 
                     if (type === 'img') {
                         media.setAttribute('alt', this.data.alt);
-                    } else if (['audio', 'video'].includes(type)) {
+                    } else if (['audio', 'video'].indexOf(type) >= 0) {
                         media.setAttribute('controls', true);
                     } else {
                         media.setAttribute('allowfullscreen', true);
