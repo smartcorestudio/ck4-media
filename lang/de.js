@@ -5,7 +5,7 @@
         alt: 'Alternativer Text',
         caption: 'Beschriftung',
         info: 'Info',
-        title: 'Medien',
+        title: 'Medien - Bild, Audio, Video, Iframe',
         urlMissing: 'Sie haben keine URL angegeben'
     });
 })(CKEDITOR);

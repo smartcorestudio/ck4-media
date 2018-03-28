@@ -5,7 +5,7 @@
         alt: 'Alternative Text',
         caption: 'Caption',
         info: 'Info',
-        title: 'Media',
+        title: 'Media - Image, Audio, Video, Iframe',
         urlMissing: 'URL is missing'
     });
 })(CKEDITOR);
