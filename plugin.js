@@ -62,7 +62,7 @@
                 },
                 init: function () {
                     var el = this.element;
-                    var wrapper = el.getName() === 'figure' && el.hasClass('media');
+                    var wrapper = el.getName() === 'figure';
 
                     // Media element
                     var media = wrapper ? el.findOne(tags.join(',')) : el;
