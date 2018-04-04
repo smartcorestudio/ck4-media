@@ -84,9 +84,9 @@
                             label: common.align,
                             items: [
                                 [common.alignNone, ''],
-                                [common.alignLeft, 'left'],
-                                [common.alignCenter, 'center'],
-                                [common.alignRight, 'right']
+                                [common.left, 'left'],
+                                [common.center, 'center'],
+                                [common.right, 'right']
                             ],
                             setup: function (widget) {
                                 this.setValue(widget.data.align);
