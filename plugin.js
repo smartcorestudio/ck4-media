@@ -61,7 +61,6 @@
                     return crit(el) || tags.indexOf(el.name) >= 0 && !el.getAscendant(crit);
                 },
                 init: function () {
-                    var widget = this;
                     var el = this.element;
                     var wrapper = el.getName() === 'figure' && el.hasClass('media');
 
@@ -73,23 +72,23 @@
 
                         for (var i = 0; i < attr.length; i++) {
                             if (media.hasAttribute(attr[i])) {
-                                widget.setData(attr[i], media.getAttribute(attr[i]));
+                                this.setData(attr[i], media.getAttribute(attr[i]));
                             }
                         }
                     }
 
                     // Caption element
                     if (wrapper && !!el.findOne('figcaption')) {
-                        widget.setData('caption', true);
+                        this.setData('caption', true);
                     }
 
                     // Widget element
                     if (el.hasClass(align.left)) {
-                        widget.setData('align', 'left');
+                        this.setData('align', 'left');
                     } else if (el.hasClass(align.center)) {
-                        widget.setData('align', 'center');
+                        this.setData('align', 'center');
                     } else if (el.hasClass(align.right)) {
-                        widget.setData('align', 'right');
+                        this.setData('align', 'right');
                     }
                 },
                 data: function () {
