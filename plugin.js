@@ -6,7 +6,7 @@
     var editables = {
         caption: {
             selector: 'figcaption',
-            allowedContent: 'br em strong sub sup u s; a[!href,target]'
+            allowedContent: 'br em strong sub sup u s; a[!href]'
         }
     };
     var types = {
@@ -52,7 +52,9 @@
                     align: '',
                     alt: '',
                     caption: false,
-                    src: ''
+                    height: '',
+                    src: '',
+                    width: ''
                 },
                 upcast: function (el) {
                     var crit = function (c) {
@@ -68,7 +70,7 @@
                     // Media element
                     var media = wrapper ? el.findOne(tags.join(',')) : el;
 
-                    if (media) {
+                    if (!!media) {
                         for (var i = 0; i < attr.length; i++) {
                             if (media.hasAttribute(attr[i])) {
                                 this.setData(attr[i], media.getAttribute(attr[i]));
