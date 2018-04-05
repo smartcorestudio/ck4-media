@@ -26,8 +26,8 @@
         webm: 'video',
         webp: 'img'
     };
+    var ext = Object.keys(types);
     var tags = ['iframe'];
-    var ext = Object.getOwnPropertyNames(types);
 
     for (var i = 0; i < ext.length; i++) {
         if (tags.indexOf(types[ext[i]]) < 0) {
@@ -44,10 +44,10 @@
             editor.widgets.add('media', {
                 button: editor.lang.media.title,
                 dialog: 'media',
-                template: '<figure class="media"><figcaption></figcaption></figure>',
+                template: '<figure class="media"><media /><figcaption></figcaption></figure>',
                 editables: editables,
                 allowedContent: 'figure(!media, left, center, right); ' + tags.join(' ') + '[!src, width, height, alt, controls, allowfullscreen]; figcaption',
-                requiredContent: 'figure(media); ' + tags.join(' ') + '[src]',
+                requiredContent: 'figure(media); ' + tags.join(' ') + '[src]; figcaption',
                 defaults: {
                     align: '',
                     alt: '',
@@ -61,29 +61,27 @@
                         return c.name === 'figure' && c.hasClass('media');
                     };
 
-                    return crit(el) || tags.indexOf(el.name) >= 0 && !el.getAscendant(crit);
+                    return crit(el) && el.children.length === 2 && tags.indexOf(el.children[0].name) >= 0 && el.children[1].name === 'figcaption'
+                        || !crit(el) && tags.indexOf(el.name) >= 0 && !el.getAscendant(crit);
                 },
                 init: function () {
                     var el = this.element;
-                    var wrapper = el.getName() === 'figure';
+                    var media = el;
 
-                    // Media element
-                    var media = wrapper ? el.findOne(tags.join(',')) : el;
+                    // Figure with caption
+                    if (el.getName() === 'figure') {
+                        this.setData('caption', true);
+                        media = el.getFirst();
+                    }
 
-                    if (!!media) {
-                        for (var i = 0; i < attr.length; i++) {
-                            if (media.hasAttribute(attr[i])) {
-                                this.setData(attr[i], media.getAttribute(attr[i]));
-                            }
+                    // Media attributes
+                    for (var i = 0; i < attr.length; i++) {
+                        if (media.hasAttribute(attr[i])) {
+                            this.setData(attr[i], media.getAttribute(attr[i]));
                         }
                     }
 
-                    // Caption element
-                    if (wrapper && !!el.findOne('figcaption')) {
-                        this.setData('caption', true);
-                    }
-
-                    // Widget element
+                    // Align
                     if (el.hasClass(align.left)) {
                         this.setData('align', 'left');
                     } else if (el.hasClass(align.center)) {
@@ -93,75 +91,88 @@
                     }
                 },
                 data: function () {
-                    var el = this.element;
-                    var ext = this.data.src ? this.data.src.split('.').pop() : null;
-                    var type = ext && types.hasOwnProperty(ext) ? types[ext] : 'iframe';
-                    var cls = type === 'img' ? 'image' : type;
-                    var caption = el.findOne('figcaption');
-                    var media = el.findOne(tags.join(','));
-
-                    if (media) {
-                        media.remove();
+                    if (!this.data.src) {
+                        return;
                     }
 
-                    if (this.data.caption) {
-                        if (el.getName() !== 'figure') {
-                            el.renameNode('figure');
+                    var el = this.element;
+                    var i;
 
-                            for (var i = 0; i < attr.length; i++) {
-                                el.removeAttribute(attr[i]);
-                            }
+                    el.removeClass('media');
+                    el.removeClass(align.left);
+                    el.removeClass(align.center);
+                    el.removeClass(align.right);
 
-                            el.setAttribute('class', 'media');
-                        }
+                    for (i = 0; i < tags.length; i++) {
+                        el.removeClass(tags[i]);
+                    }
 
-                        if (!caption) {
-                            caption = new CKEDITOR.dom.element('figcaption');
-                            el.append(caption);
-                            this.initEditable('caption', editables.caption);
+                    var ext = this.data.src.split('.').pop();
+                    var type = ext && types.hasOwnProperty(ext) ? types[ext] : 'iframe';
+                    var media = el.getName() === 'figure' ? el.getChild(0) : el;
+                    var caption = el.getName() === 'figure' ? el.getChild(1) : null;
+
+                    if (this.data.caption && el.getName() !== 'figure') {
+                        el.renameNode('figure');
+
+                        for (i = 0; i < attr.length; i++) {
+                            el.removeAttribute(attr[i]);
                         }
 
                         media = new CKEDITOR.dom.element(type);
                         el.append(media, true);
-                        el.addClass(cls);
-                    } else {
-                        if (el.getName() !== type) {
-                            el.renameNode(type);
-                        }
+                        el.addClass('media');
+                        el.addClass(type);
+                    } else if (!this.data.caption && el.getName() === 'figure') {
+                        el.renameNode(type);
+                        media.remove();
 
                         if (caption) {
                             caption.remove();
                         }
 
-                        el.removeClass('media');
-                        el.removeClass(cls);
                         media = el;
                     }
 
-                    // Media element
+                    if (this.data.caption && !caption) {
+                        el.append(new CKEDITOR.dom.element('figcaption'));
+                        this.initEditable('caption', editables.caption);
+                    }
+
+                    if (media.getName() !== type) {
+                        media.renameNode(type);
+                    }
+
+                    // Media attributes
                     media.setAttribute('src', this.data.src);
 
                     if (this.data.width) {
                         media.setAttribute('width', this.data.width);
+                    } else {
+                        media.removeAttribute('width');
                     }
 
                     if (this.data.height) {
                         media.setAttribute('height', this.data.height);
+                    } else {
+                        media.removeAttribute('heigeht');
                     }
 
                     if (type === 'img') {
+                        media.removeAttribute('allowfullscreen');
                         media.setAttribute('alt', this.data.alt);
+                        media.removeAttribute('controls');
                     } else if (['audio', 'video'].indexOf(type) >= 0) {
+                        media.removeAttribute('allowfullscreen');
+                        media.removeAttribute('alt');
                         media.setAttribute('controls', true);
-                    } else {
+                    } else if (type === 'iframe') {
                         media.setAttribute('allowfullscreen', true);
+                        media.removeAttribute('alt');
+                        media.removeAttribute('controls');
                     }
 
-                    // Widget element
-                    el.removeClass(align.left);
-                    el.removeClass(align.center);
-                    el.removeClass(align.right);
-
+                    // Align
                     if (this.data.align && align.hasOwnProperty(this.data.align)) {
                         el.addClass(align[this.data.align]);
                     }
