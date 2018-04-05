@@ -155,7 +155,7 @@
                     if (this.data.height) {
                         media.setAttribute('height', this.data.height);
                     } else {
-                        media.removeAttribute('heigeht');
+                        media.removeAttribute('height');
                     }
 
                     if (type === 'img') {
