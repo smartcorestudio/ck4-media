@@ -2,6 +2,7 @@
 
 (function (CKEDITOR) {
     var align = {left: 'left', center: 'center', right: 'right'};
+    var attr = ['src', 'width', 'height', 'alt'];
     var editables = {
         caption: {
             selector: 'figcaption',
@@ -68,8 +69,6 @@
                     var media = wrapper ? el.findOne(tags.join(',')) : el;
 
                     if (media) {
-                        var attr = ['src', 'width', 'height', 'alt'];
-
                         for (var i = 0; i < attr.length; i++) {
                             if (media.hasAttribute(attr[i])) {
                                 this.setData(attr[i], media.getAttribute(attr[i]));
@@ -106,8 +105,12 @@
                     if (this.data.caption) {
                         if (el.getName() !== 'figure') {
                             el.renameNode('figure');
-                            el.removeAttributes();
-                            el.addClass('media');
+
+                            for (var i = 0; i < attr.length; i++) {
+                                el.removeAttribute(attr[i]);
+                            }
+
+                            el.setAttribute('class', 'media');
                         }
 
                         if (!caption) {
