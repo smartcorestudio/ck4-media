@@ -61,6 +61,10 @@
                         return c.name === 'figure' && c.hasClass('media');
                     };
 
+                    if (crit(el) && el.children.length === 1 && tags.indexOf(el.children[0].name) >= 0) {
+                        el.add(new CKEDITOR.htmlParser.element('figcaption', {}));
+                    }
+
                     return crit(el) && el.children.length === 2 && tags.indexOf(el.children[0].name) >= 0 && el.children[1].name === 'figcaption'
                         || !crit(el) && tags.indexOf(el.name) >= 0 && !el.getAscendant(crit);
                 },
@@ -111,6 +115,8 @@
                     var type = ext && types.hasOwnProperty(ext) ? types[ext] : 'iframe';
                     var media = el.getName() === 'figure' ? el.getChild(0) : el;
                     var caption = el.getName() === 'figure' ? el.getChild(1) : null;
+
+                    this.inline = !this.data.caption;
 
                     if (this.data.caption && el.getName() !== 'figure') {
                         el.renameNode('figure');
