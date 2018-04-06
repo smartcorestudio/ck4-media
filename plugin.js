@@ -44,7 +44,7 @@
             editor.widgets.add('media', {
                 button: editor.lang.media.title,
                 dialog: 'media',
-                template: '<figure class="media"><media /><figcaption></figcaption></figure>',
+                template: '<figure class="media"><img /><figcaption></figcaption></figure>',
                 editables: editables,
                 allowedContent: 'figure(!media, left, center, right); ' + tags.join(' ') + '[!src, width, height, alt, controls, allowfullscreen]; figcaption',
                 requiredContent: 'figure(media); ' + tags.join(' ') + '[src]; figcaption',
