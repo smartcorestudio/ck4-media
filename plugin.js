@@ -121,22 +121,15 @@
 
                         media = new CKEDITOR.dom.element(type);
                         el.append(media, true);
+                        el.append(new CKEDITOR.dom.element('figcaption'));
+                        this.initEditable('caption', editables.caption);
                         el.addClass('media');
                         el.addClass(type);
                     } else if (!this.data.caption && el.getName() === 'figure') {
                         el.renameNode(type);
                         media.remove();
-
-                        if (caption) {
-                            caption.remove();
-                        }
-
+                        caption.remove();
                         media = el;
-                    }
-
-                    if (this.data.caption && !caption) {
-                        el.append(new CKEDITOR.dom.element('figcaption'));
-                        this.initEditable('caption', editables.caption);
                     }
 
                     if (media.getName() !== type) {
