@@ -46,7 +46,7 @@
                 dialog: 'media',
                 template: '<figure class="media"><img /><figcaption></figcaption></figure>',
                 editables: editables,
-                allowedContent: 'figure(!media, left, center, right); ' + tags.join(' ') + '[!src, width, height, alt, controls, allowfullscreen]; figcaption',
+                allowedContent: 'figure(!media, left, center, right); a[!href]; ' + tags.join(' ') + '[!src, width, height, alt, controls, allowfullscreen]; figcaption',
                 requiredContent: 'figure(media); ' + tags.join(' ') + '[src]; figcaption',
                 defaults: {
                     align: '',
@@ -58,35 +58,59 @@
                     width: ''
                 },
                 upcast: function (el) {
-                    var crit = function (c) {
-                        return c.name === 'figure' && c.hasClass('media');
+                    var crit = function (e) {
+                        return e.name === 'figure' && e.hasClass('media');
+                    };
+                    var med = function (e) {
+                        return tags.indexOf(e.name) >= 0;
+                    };
+                    var link = function (e) {
+                        return e.name === 'a' && e.children.length === 1 && med(e.children[0]);
                     };
 
-                    if (crit(el) && el.children.length > 0 && el.children[0].name === 'a' && el.children[0].children.length === 1 && tags.indexOf(el.children[0].children[0].name) >= 0) {
-                        this.setData('link', el.children[0].getAttribute('href'));
-                        el.children[0].replaceWithChildren();
-                    }
-
-                    if (crit(el) && el.children.length === 1 && tags.indexOf(el.children[0].name) >= 0) {
+                    // Add missing caption
+                    if (crit(el) && el.children.length === 1) {
                         el.add(new CKEDITOR.htmlParser.element('figcaption', {}));
                     }
 
-                    return crit(el) && el.children.length === 2 && tags.indexOf(el.children[0].name) >= 0 && el.children[1].name === 'figcaption'
-                        || !crit(el) && tags.indexOf(el.name) >= 0 && !el.getAscendant(crit);
+                    return crit(el) && el.children.length === 2  && (med(el.children[0]) || link(el.children[0])) && el.children[1].name === 'figcaption'
+                        || !crit(el) && med(el) && !el.getAscendant(crit);
                 },
                 downcast: function (el) {
-                    if (this.data.link && el.name === 'figure' && el.children[0].name === 'img') {
-                        el.children[0].wrapWith(new CKEDITOR.htmlParser.element('a', {'href': this.data.link}));
+                    if (el.name === 'figure') {
+                        if (this.data.link && el.children[0].name === 'img') {
+                            el.children[0].wrapWith(new CKEDITOR.htmlParser.element('a', {'href': this.data.link}));
+                        }
+
+                        if (!el.children[1].getHtml().trim()) {
+                            el.children[1].remove();
+                        } else {
+                            el.children[1].attributes = [];
+                        }
                     }
                 },
                 init: function () {
                     var el = this.element;
                     var media = el;
+                    var a;
 
-                    // Figure with caption
+                    // Figure with caption + link
                     if (el.getName() === 'figure') {
                         this.setData('caption', true);
                         media = el.getFirst();
+
+                        if (media.getName() === 'a') {
+                            this.setData('link', media.getAttribute('href'));
+                            media.getChild(0).move(el, true);
+                            media.remove();
+                            media = el.getFirst();
+                        }
+                    } else {
+                        if (a = el.getAscendant('a')) {
+                            this.setData('link', a.getAttribute('href'));
+                        }
+
+                        this.inline = true;
                     }
 
                     // Media attributes
@@ -138,15 +162,23 @@
 
                         media = new CKEDITOR.dom.element(type);
                         el.append(media, true);
-                        el.append(new CKEDITOR.dom.element('figcaption'));
+                        caption = new CKEDITOR.dom.element('figcaption');
+                        el.append(caption);
                         this.initEditable('caption', editables.caption);
                         el.addClass('media');
                         el.addClass(type);
+                        this.wrapper.renameNode('div');
+                        this.wrapper.removeClass('cke_widget_inline');
+                        this.wrapper.addClass('cke_widget_block');
                     } else if (!this.data.caption && el.getName() === 'figure') {
                         el.renameNode(type);
                         media.remove();
-                        caption.remove();
                         media = el;
+                        caption.remove();
+                        caption = null;
+                        this.wrapper.renameNode('span');
+                        this.wrapper.removeClass('cke_widget_block');
+                        this.wrapper.addClass('cke_widget_inline');
                     }
 
                     if (media.getName() !== type) {
