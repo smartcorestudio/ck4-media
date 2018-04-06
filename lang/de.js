@@ -5,6 +5,7 @@
         alt: 'Alternativer Text',
         caption: 'Beschriftung',
         info: 'Info',
+        link: 'Link',
         title: 'Medien - Bild, Audio, Video, Iframe',
         urlMissing: 'Sie haben keine URL angegeben'
     });

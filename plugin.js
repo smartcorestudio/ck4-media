@@ -53,6 +53,7 @@
                     alt: '',
                     caption: false,
                     height: '',
+                    link: '',
                     src: '',
                     width: ''
                 },
@@ -61,12 +62,22 @@
                         return c.name === 'figure' && c.hasClass('media');
                     };
 
+                    if (crit(el) && el.children.length > 0 && el.children[0].name === 'a' && el.children[0].children.length === 1 && tags.indexOf(el.children[0].children[0].name) >= 0) {
+                        this.setData('link', el.children[0].getAttribute('href'));
+                        el.children[0].replaceWithChildren();
+                    }
+
                     if (crit(el) && el.children.length === 1 && tags.indexOf(el.children[0].name) >= 0) {
                         el.add(new CKEDITOR.htmlParser.element('figcaption', {}));
                     }
 
                     return crit(el) && el.children.length === 2 && tags.indexOf(el.children[0].name) >= 0 && el.children[1].name === 'figcaption'
                         || !crit(el) && tags.indexOf(el.name) >= 0 && !el.getAscendant(crit);
+                },
+                downcast: function (el) {
+                    if (this.data.link && el.name === 'figure' && el.children[0].name === 'img') {
+                        el.children[0].wrapWith(new CKEDITOR.htmlParser.element('a', {'href': this.data.link}));
+                    }
                 },
                 init: function () {
                     var el = this.element;

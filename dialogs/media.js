@@ -79,6 +79,17 @@
                             }
                         },
                         {
+                            id: 'link',
+                            type: 'text',
+                            label: lang.link,
+                            setup: function (widget) {
+                                this.setValue(widget.data.link);
+                            },
+                            commit: function (widget) {
+                                widget.setData('link', this.getValue());
+                            }
+                        },
+                        {
                             id: 'align',
                             type: 'radio',
                             label: common.align,
