@@ -207,9 +207,9 @@
                     } else if (['audio', 'video'].indexOf(type) >= 0) {
                         media.removeAttribute('allowfullscreen');
                         media.removeAttribute('alt');
-                        media.setAttribute('controls', true);
+                        media.setAttribute('controls', 'controls');
                     } else if (type === 'iframe') {
-                        media.setAttribute('allowfullscreen', true);
+                        media.setAttribute('allowfullscreen', 'allowfullscreen');
                         media.removeAttribute('alt');
                         media.removeAttribute('controls');
                     }
