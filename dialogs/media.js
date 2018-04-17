@@ -29,7 +29,7 @@
                                     commit: function (widget) {
                                         widget.setData('src', this.getValue());
                                     },
-                                    validate: CKEDITOR.dialog.validate.notEmpty(lang.urlMissing)
+                                    validate: CKEDITOR.dialog.validate.notEmpty(lang.validateRequired)
                                 },
                                 {
                                     id: 'browse',
@@ -39,6 +39,25 @@
                                     filebrowser: 'info:src'
                                 }
                             ]
+                        },
+                        {
+                            id: 'mediatype',
+                            type: 'select',
+                            label: lang.mediatype,
+                            items: [
+                                [common.notSet, ''],
+                                [lang.image, 'img'],
+                                [lang.audio, 'audio'],
+                                [lang.video, 'video'],
+                                [lang.iframe, 'iframe']
+                            ],
+                            setup: function (widget) {
+                                this.setValue(widget.data.mediatype);
+                            },
+                            commit: function (widget) {
+                                widget.setData('mediatype', this.getValue());
+                            },
+                            validate: CKEDITOR.dialog.validate.notEmpty(lang.validateRequired)
                         },
                         {
                             type: 'hbox',
