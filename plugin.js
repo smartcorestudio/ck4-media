@@ -13,6 +13,7 @@
         aac: 'audio',
         flac: 'audio',
         gif: 'img',
+        jpeg: 'img',
         jpg: 'img',
         mp3: 'audio',
         mp4: 'video',
