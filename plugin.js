@@ -68,46 +68,47 @@
                     }
                 },
                 init: function () {
-                    var el = this.element;
+                    var widget = this;
+                    var el = widget.element;
                     var media = el;
                     var a;
 
                     // Figure with caption + link
                     if (el.getName() === 'figure') {
-                        this.setData('caption', true);
+                        widget.setData('caption', true);
                         media = el.getFirst();
 
                         if (media.getName() === 'a') {
-                            this.setData('link', media.getAttribute('href'));
+                            widget.setData('link', media.getAttribute('href'));
                             media.getChild(0).move(el, true);
                             media.remove();
                             media = el.getFirst();
                         }
                     } else {
                         if (a = el.getAscendant('a')) {
-                            this.setData('link', a.getAttribute('href'));
+                            widget.setData('link', a.getAttribute('href'));
                         }
 
-                        this.inline = true;
+                        widget.inline = true;
                     }
 
                     // Media type
-                    this.setData('mediatype', media.getName());
+                    widget.setData('mediatype', media.getName());
 
                     // Media attributes
-                    for (var i = 0; i < attr.length; i++) {
-                        if (media.hasAttribute(attr[i])) {
-                            this.setData(attr[i], media.getAttribute(attr[i]));
+                    attr.forEach(function (a) {
+                        if (media.hasAttribute(a)) {
+                            widget.setData(a, media.getAttribute(a));
                         }
-                    }
+                    });
 
                     // Align
                     if (el.hasClass(align.left)) {
-                        this.setData('align', 'left');
+                        widget.setData('align', 'left');
                     } else if (el.hasClass(align.center)) {
-                        this.setData('align', 'center');
+                        widget.setData('align', 'center');
                     } else if (el.hasClass(align.right)) {
-                        this.setData('align', 'right');
+                        widget.setData('align', 'right');
                     }
                 },
                 data: function () {
