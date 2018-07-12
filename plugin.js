@@ -241,12 +241,12 @@
         var url = dialog.getParentEditor().config.mediaBrowserUrl;
         var win = window.open(
             url,
-            'browser',
+            'mediabrowser',
             'location=no,menubar=no,toolbar=no,dependent=yes,minimizable=no,modal=yes,alwaysRaised=yes,resizable=yes,scrollbars=yes'
         );
 
         window.addEventListener('message', function (e) {
-            if (e.origin === win.origin && e.data.id === 'browser' && !!e.data.src) {
+            if (e.origin === win.origin && e.data.id === 'mediabrowser' && !!e.data.src) {
                 target.setValue(e.data.src);
                 dialog.selectPage(t[0]);
             }
