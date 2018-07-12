@@ -9,8 +9,8 @@
         image: 'Image',
         info: 'Info',
         link: 'Link',
-        mediatype: 'Media Type',
         title: 'Media - Image, Audio, Video, Iframe',
+        type: 'Media Type',
         validateRequired: 'This field is required',
         video: 'Video'
     });

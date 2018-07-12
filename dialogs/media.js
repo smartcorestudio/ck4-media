@@ -16,9 +16,9 @@
                     label: lang.info,
                     elements: [
                         {
-                            id: 'mediatype',
+                            id: 'type',
                             type: 'select',
-                            label: lang.mediatype,
+                            label: lang.type,
                             items: [
                                 [common.notSet, ''],
                                 [lang.image, 'img'],
@@ -27,10 +27,10 @@
                                 [lang.iframe, 'iframe']
                             ],
                             setup: function (widget) {
-                                this.setValue(widget.data.mediatype);
+                                this.setValue(widget.data.type);
                             },
                             commit: function (widget) {
-                                widget.setData('mediatype', this.getValue());
+                                widget.setData('type', this.getValue());
                             },
                             validate: CKEDITOR.dialog.validate.notEmpty(lang.validateRequired)
                         },

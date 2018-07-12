@@ -31,8 +31,8 @@
                     caption: false,
                     height: '',
                     link: '',
-                    mediatype: '',
                     src: '',
+                    type: '',
                     width: ''
                 },
                 upcast: function (el) {
@@ -93,7 +93,7 @@
                     }
 
                     // Media type
-                    widget.setData('mediatype', media.getName());
+                    widget.setData('type', media.getName());
 
                     // Media attributes
                     attr.forEach(function (a) {
@@ -112,7 +112,7 @@
                     }
                 },
                 data: function () {
-                    if (!this.data.src || !this.data.mediatype) {
+                    if (!this.data.src || !this.data.type) {
                         return;
                     }
 
@@ -128,7 +128,7 @@
                         el.removeClass(types[i]);
                     }
 
-                    var type = this.data.mediatype;
+                    var type = this.data.type;
                     var media = el.getName() === 'figure' ? el.getChild(0) : el;
                     var caption = el.getName() === 'figure' ? el.getChild(1) : null;
 
