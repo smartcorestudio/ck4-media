@@ -16,6 +16,25 @@
                     label: lang.info,
                     elements: [
                         {
+                            id: 'mediatype',
+                            type: 'select',
+                            label: lang.mediatype,
+                            items: [
+                                [common.notSet, ''],
+                                [lang.image, 'img'],
+                                [lang.audio, 'audio'],
+                                [lang.video, 'video'],
+                                [lang.iframe, 'iframe']
+                            ],
+                            setup: function (widget) {
+                                this.setValue(widget.data.mediatype);
+                            },
+                            commit: function (widget) {
+                                widget.setData('mediatype', this.getValue());
+                            },
+                            validate: CKEDITOR.dialog.validate.notEmpty(lang.validateRequired)
+                        },
+                        {
 
                             type: 'hbox',
                             children: [
@@ -36,28 +55,9 @@
                                     type: 'button',
                                     label: common.browseServer,
                                     hidden: true,
-                                    filebrowser: 'info:src'
+                                    mediabrowser: 'info:src'
                                 }
                             ]
-                        },
-                        {
-                            id: 'mediatype',
-                            type: 'select',
-                            label: lang.mediatype,
-                            items: [
-                                [common.notSet, ''],
-                                [lang.image, 'img'],
-                                [lang.audio, 'audio'],
-                                [lang.video, 'video'],
-                                [lang.iframe, 'iframe']
-                            ],
-                            setup: function (widget) {
-                                this.setValue(widget.data.mediatype);
-                            },
-                            commit: function (widget) {
-                                widget.setData('mediatype', this.getValue());
-                            },
-                            validate: CKEDITOR.dialog.validate.notEmpty(lang.validateRequired)
                         },
                         {
                             type: 'hbox',

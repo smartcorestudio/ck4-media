@@ -1,8 +1,9 @@
 'use strict';
 
-(function (CKEDITOR) {
+(function (window, CKEDITOR) {
     var align = {left: 'left', center: 'center', right: 'right'};
     var attr = ['src', 'width', 'height', 'alt'];
+    var container = ['hbox', 'vbox', 'fieldset'];
     var editables = {
         caption: {
             selector: 'figcaption',
@@ -203,4 +204,51 @@
             CKEDITOR.dialog.add('media', this.path + 'dialogs/media.js');
         }
     });
-})(CKEDITOR);
+    CKEDITOR.on('dialogDefinition', function (ev) {
+        if (!ev.editor.plugins.media || !ev.editor.config.mediaBrowserUrl) {
+            return;
+        }
+
+        var def = ev.data.definition;
+
+        for (var i = 0; i < def.contents.length; ++i) {
+            if (def.contents[i] && def.contents[i].elements) {
+                findMediaBrowser(def.contents[i].elements);
+            }
+        }
+    });
+
+    function findMediaBrowser(items) {
+        if (!Array.isArray(items) || items.length <= 0) {
+            return;
+        }
+
+        items.forEach(function (item) {
+            if (container.indexOf(item.type) >= 0 && item.children && item.children.length > 0) {
+                findMediaBrowser(item.children);
+            } else if (item.type === 'button' && item.mediabrowser && item.mediabrowser.split(':').length === 2) {
+                item.hidden = false;
+                item.onClick = mediaBrowser;
+            }
+        });
+    }
+
+    function mediaBrowser(ev) {
+        var t = ev.sender.mediabrowser.split(':');
+        var target = ev.data.dialog.getContentElement(t[0], t[1]);
+        var dialog = ev.sender.getDialog();
+        var url = dialog.getParentEditor().config.mediaBrowserUrl;
+        var win = window.open(
+            url,
+            'browser',
+            'location=no,menubar=no,toolbar=no,dependent=yes,minimizable=no,modal=yes,alwaysRaised=yes,resizable=yes,scrollbars=yes'
+        );
+
+        window.addEventListener('message', function (e) {
+            if (e.origin === win.origin && e.data.id === 'ckMediaBrowser' && !!e.data.src) {
+                target.setValue(e.data.src);
+                dialog.selectPage(t[0]);
+            }
+        }, false);
+    }
+})(window, CKEDITOR);
