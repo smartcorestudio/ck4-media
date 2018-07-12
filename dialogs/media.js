@@ -55,7 +55,7 @@
                                     type: 'button',
                                     label: common.browseServer,
                                     hidden: true,
-                                    mediabrowser: 'info:src'
+                                    mediabrowser: true
                                 }
                             ]
                         },

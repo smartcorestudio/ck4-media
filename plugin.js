@@ -227,7 +227,7 @@
         items.forEach(function (item) {
             if (container.indexOf(item.type) >= 0 && item.children && item.children.length > 0) {
                 findMediaBrowser(item.children);
-            } else if (item.type === 'button' && item.mediabrowser && item.mediabrowser.split(':').length === 2) {
+            } else if (item.type === 'button' && item.mediabrowser) {
                 item.hidden = false;
                 item.onClick = mediaBrowser;
             }
@@ -235,8 +235,6 @@
     }
 
     function mediaBrowser(ev) {
-        var t = ev.sender.mediabrowser.split(':');
-        var target = ev.data.dialog.getContentElement(t[0], t[1]);
         var dialog = ev.sender.getDialog();
         var url = dialog.getParentEditor().config.mediaBrowserUrl;
         var win = window.open(
@@ -247,8 +245,15 @@
 
         window.addEventListener('message', function (e) {
             if (e.origin === win.origin && e.data.id === 'mediabrowser' && !!e.data.src) {
-                target.setValue(e.data.src);
-                dialog.selectPage(t[0]);
+                ev.data.dialog.getContentElement('info', 'src').setValue(e.data.src);
+
+                if (!!e.data.alt) {
+                    ev.data.dialog.getContentElement('info', 'alt').setValue(e.data.alt);
+                }
+
+                if (!!e.data.type) {
+                    ev.data.dialog.getContentElement('info', 'type').setValue(e.data.type);
+                }
             }
         }, false);
     }
