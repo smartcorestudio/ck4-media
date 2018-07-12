@@ -1,9 +1,8 @@
 'use strict';
 
-(function (window, CKEDITOR) {
+(function (CKEDITOR) {
     var align = {left: 'left', center: 'center', right: 'right'};
     var attr = ['src', 'width', 'height', 'alt'];
-    var container = ['hbox', 'vbox', 'fieldset'];
     var editables = {
         caption: {
             selector: 'figcaption',
@@ -205,56 +204,4 @@
             CKEDITOR.dialog.add('media', this.path + 'dialogs/media.js');
         }
     });
-    CKEDITOR.on('dialogDefinition', function (ev) {
-        if (!ev.editor.plugins.media || !ev.editor.config.mediaBrowserUrl) {
-            return;
-        }
-
-        var def = ev.data.definition;
-
-        for (var i = 0; i < def.contents.length; ++i) {
-            if (def.contents[i] && def.contents[i].elements) {
-                findMediaBrowser(def.contents[i].elements);
-            }
-        }
-    });
-
-    function findMediaBrowser(items) {
-        if (!Array.isArray(items) || items.length <= 0) {
-            return;
-        }
-
-        items.forEach(function (item) {
-            if (container.indexOf(item.type) >= 0 && item.children && item.children.length > 0) {
-                findMediaBrowser(item.children);
-            } else if (item.type === 'button' && item.mediabrowser) {
-                item.hidden = false;
-                item.onClick = mediaBrowser;
-            }
-        });
-    }
-
-    function mediaBrowser(ev) {
-        var dialog = ev.sender.getDialog();
-        var url = dialog.getParentEditor().config.mediaBrowserUrl;
-        var win = window.open(
-            url,
-            'mediabrowser',
-            'location=no,menubar=no,toolbar=no,dependent=yes,minimizable=no,modal=yes,alwaysRaised=yes,resizable=yes,scrollbars=yes'
-        );
-
-        window.addEventListener('message', function (e) {
-            if (e.origin === win.origin && e.data.id === 'mediabrowser' && !!e.data.src) {
-                ev.data.dialog.getContentElement('info', 'src').setValue(e.data.src);
-
-                if (!!e.data.alt) {
-                    ev.data.dialog.getContentElement('info', 'alt').setValue(e.data.alt);
-                }
-
-                if (!!e.data.type) {
-                    ev.data.dialog.getContentElement('info', 'type').setValue(e.data.type);
-                }
-            }
-        }, false);
-    }
-})(window, CKEDITOR);
+})(CKEDITOR);

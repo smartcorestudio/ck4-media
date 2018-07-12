@@ -1,6 +1,6 @@
 'use strict';
 
-(function (document, CKEDITOR) {
+(function (document, window, CKEDITOR) {
     CKEDITOR.dialog.add('media', function (editor) {
         var lang = editor.lang.media;
         var common = editor.lang.common;
@@ -54,8 +54,31 @@
                                     id: 'browse',
                                     type: 'button',
                                     label: common.browseServer,
-                                    hidden: true,
-                                    mediabrowser: true
+                                    onClick: function (ev) {
+                                        if (!editor.config.mediaBrowserUrl) {
+                                            return;
+                                        }
+
+                                        var win = window.open(
+                                            editor.config.mediaBrowserUrl,
+                                            'mediabrowser',
+                                            'location=no,menubar=no,toolbar=no,dependent=yes,minimizable=no,modal=yes,alwaysRaised=yes,resizable=yes,scrollbars=yes'
+                                        );
+
+                                        window.addEventListener('message', function (e) {
+                                            if (e.origin === win.origin && e.data.id === 'mediabrowser' && !!e.data.src) {
+                                                ev.data.dialog.getContentElement('info', 'src').setValue(e.data.src);
+
+                                                if (!!e.data.alt) {
+                                                    ev.data.dialog.getContentElement('info', 'alt').setValue(e.data.alt);
+                                                }
+
+                                                if (!!e.data.type) {
+                                                    ev.data.dialog.getContentElement('info', 'type').setValue(e.data.type);
+                                                }
+                                            }
+                                        }, false);
+                                    }
                                 }
                             ]
                         },
@@ -141,4 +164,4 @@
             ]
         };
     });
-})(document, CKEDITOR);
+})(document, window, CKEDITOR);
