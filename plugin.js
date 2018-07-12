@@ -246,7 +246,7 @@
         );
 
         window.addEventListener('message', function (e) {
-            if (e.origin === win.origin && e.data.id === 'ckMediaBrowser' && !!e.data.src) {
+            if (e.origin === win.origin && e.data.id === 'browser' && !!e.data.src) {
                 target.setValue(e.data.src);
                 dialog.selectPage(t[0]);
             }
