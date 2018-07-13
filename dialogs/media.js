@@ -54,6 +54,7 @@
                                     id: 'browse',
                                     type: 'button',
                                     label: common.browseServer,
+                                    hidden: !editor.config.mediaBrowserUrl,
                                     onClick: function (ev) {
                                         if (!editor.config.mediaBrowserUrl) {
                                             return;
@@ -71,6 +72,10 @@
 
                                                 if (!!e.data.alt) {
                                                     ev.data.dialog.getContentElement('info', 'alt').setValue(e.data.alt);
+                                                }
+
+                                                if (!!e.data.caption) {
+                                                    ev.data.dialog.getContentElement('info', 'caption').setValue(true);
                                                 }
 
                                                 if (!!e.data.type) {
