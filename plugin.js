@@ -204,4 +204,14 @@
             CKEDITOR.dialog.add('media', this.path + 'dialogs/media.js');
         }
     });
+
+    CKEDITOR.on('dialogDefinition', function (ev) {
+        var button = ev.data.definition.contents[0].elements[1].children[1];
+
+        if (!!ev.editor.plugins.mediabrowser) {
+            button.mediabrowser = {alt: 'info:alt', src: 'info:src', type: 'info:type'};
+        } else if (!!ev.editor.plugins.filebrowser) {
+            button.filebrowser = 'info:src';
+        }
+    }, null, null, 1);
 })(CKEDITOR);

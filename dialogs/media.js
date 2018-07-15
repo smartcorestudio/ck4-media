@@ -54,9 +54,7 @@
                                     id: 'browse',
                                     type: 'button',
                                     label: common.browseServer,
-                                    hidden: true,
-                                    filebrowser: 'info:src',
-                                    mediabrowser: {alt: 'info:alt', src: 'info:src', type: 'info:type'}
+                                    hidden: true
                                 }
                             ]
                         },
