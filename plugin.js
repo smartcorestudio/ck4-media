@@ -206,7 +206,7 @@
     });
 
     CKEDITOR.on('dialogDefinition', function (ev) {
-        var button = ev.data.definition.contents[0].elements[1].children[1];
+        var button = ev.data.definition.contents[0].elements[0].children[1];
 
         if (!!ev.editor.plugins.mediabrowser) {
             button.mediabrowser = {alt: 'info:alt', src: 'info:src', type: 'info:type'};
@@ -214,4 +214,38 @@
             button.filebrowser = 'info:src';
         }
     }, null, null, 1);
+
+    /**
+     * Public API
+     */
+    CKEDITOR.media = {
+        type: function (url) {
+            var xhr = new XMLHttpRequest();
+
+            xhr.open('HEAD', url, false);
+            xhr.send();
+
+            if (xhr.readyState === xhr.DONE && xhr.status >= 200 && xhr.status < 300) {
+                var type = xhr.getResponseHeader('Content-Type');
+
+                if (type.indexOf('audio/') === 0) {
+                    return 'audio';
+                }
+
+                if (type.indexOf('text/html') === 0) {
+                    return 'iframe';
+                }
+
+                if (type.indexOf('image/') === 0) {
+                    return 'img';
+                }
+
+                if (type.indexOf('video/') === 0) {
+                    return 'video';
+                }
+            }
+
+            return '';
+        }
+    };
 })(CKEDITOR);

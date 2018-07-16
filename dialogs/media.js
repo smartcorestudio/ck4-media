@@ -16,25 +16,6 @@
                     label: lang.info,
                     elements: [
                         {
-                            id: 'type',
-                            type: 'select',
-                            label: lang.type,
-                            items: [
-                                [common.notSet, ''],
-                                [lang.image, 'img'],
-                                [lang.audio, 'audio'],
-                                [lang.video, 'video'],
-                                [lang.iframe, 'iframe']
-                            ],
-                            setup: function (widget) {
-                                this.setValue(widget.data.type);
-                            },
-                            commit: function (widget) {
-                                widget.setData('type', this.getValue());
-                            },
-                            validate: CKEDITOR.dialog.validate.notEmpty(lang.validateRequired)
-                        },
-                        {
 
                             type: 'hbox',
                             children: [
@@ -47,8 +28,19 @@
                                     },
                                     commit: function (widget) {
                                         widget.setData('src', this.getValue());
+                                        widget.setData('type', CKEDITOR.media.type(this.getValue()));
                                     },
-                                    validate: CKEDITOR.dialog.validate.notEmpty(lang.validateRequired)
+                                    validate: function () {
+                                        if (!this.getValue().trim()) {
+                                            return lang.validateRequired;
+                                        }
+
+                                        if (!CKEDITOR.media.type(this.getValue())) {
+                                            return lang.validateType;
+                                        }
+
+                                        return true;
+                                    }
                                 },
                                 {
                                     id: 'browse',
