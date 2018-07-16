@@ -219,6 +219,25 @@
      * Public API
      */
     CKEDITOR.media = {
+        audio: [
+            'audio/aac', 'audio/flac', 'audio/mp3', 'audio/ogg', 'audio/wav', 'audio/wave', 'audio/webm',
+            'audio/x-aac', 'audio/x-flac', 'audio/x-pn-wav', 'audio/x-wav'
+        ],
+        iframe: ['text/html'],
+        img: ['image/gif', 'image/jpeg', 'image/png', 'image/svg+xml', 'image/webp'],
+        video: ['video/mp4', 'video/ogg', 'video/webm'],
+        isAudio: function (type) {
+            return this.audio.indexOf(type) >= 0
+        },
+        isIframe: function (type) {
+            return this.iframe.indexOf(type) >= 0;
+        },
+        isImg: function (type) {
+            return this.img.indexOf(type) >= 0;
+        },
+        isVideo: function (type) {
+            return this.video.indexOf(type) >= 0
+        },
         type: function (url) {
             var xhr = new XMLHttpRequest();
 
@@ -226,21 +245,21 @@
             xhr.send();
 
             if (xhr.readyState === xhr.DONE && xhr.status >= 200 && xhr.status < 300) {
-                var type = xhr.getResponseHeader('Content-Type');
+                var type = xhr.getResponseHeader('Content-Type').split(';')[0].trim();
 
-                if (type.indexOf('audio/') === 0) {
+                if (this.isAudio(type)) {
                     return 'audio';
                 }
 
-                if (type.indexOf('text/html') === 0) {
+                if (this.isIframe(type)) {
                     return 'iframe';
                 }
 
-                if (type.indexOf('image/') === 0) {
+                if (this.isImg(type)) {
                     return 'img';
                 }
 
-                if (type.indexOf('video/') === 0) {
+                if (this.isVideo(type)) {
                     return 'video';
                 }
             }
