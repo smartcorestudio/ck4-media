@@ -45,6 +45,39 @@
                             hidden: true
                         },
                         {
+                            id: 'alt',
+                            type: 'text',
+                            label: lang.alt,
+                            setup: function (widget) {
+                                this.setValue(widget.data.alt);
+                            },
+                            commit: function (widget) {
+                                widget.setData('alt', this.getValue());
+                            }
+                        },
+                        {
+                            id: 'caption',
+                            type: 'checkbox',
+                            label: lang.caption,
+                            setup: function (widget) {
+                                this.setValue(widget.data.caption);
+                            },
+                            commit: function (widget) {
+                                widget.setData('caption', this.getValue());
+                            }
+                        },
+                        {
+                            id: 'link',
+                            type: 'text',
+                            label: lang.link,
+                            setup: function (widget) {
+                                this.setValue(widget.data.link);
+                            },
+                            commit: function (widget) {
+                                widget.setData('link', this.getValue());
+                            }
+                        },
+                        {
                             type: 'hbox',
                             children: [
                                 {
@@ -72,28 +105,6 @@
                             ]
                         },
                         {
-                            id: 'alt',
-                            type: 'text',
-                            label: lang.alt,
-                            setup: function (widget) {
-                                this.setValue(widget.data.alt);
-                            },
-                            commit: function (widget) {
-                                widget.setData('alt', this.getValue());
-                            }
-                        },
-                        {
-                            id: 'link',
-                            type: 'text',
-                            label: lang.link,
-                            setup: function (widget) {
-                                this.setValue(widget.data.link);
-                            },
-                            commit: function (widget) {
-                                widget.setData('link', this.getValue());
-                            }
-                        },
-                        {
                             id: 'align',
                             type: 'radio',
                             label: common.align,
@@ -108,17 +119,6 @@
                             },
                             commit: function (widget) {
                                 widget.setData('align', this.getValue());
-                            }
-                        },
-                        {
-                            id: 'caption',
-                            type: 'checkbox',
-                            label: lang.caption,
-                            setup: function (widget) {
-                                this.setValue(widget.data.caption);
-                            },
-                            commit: function (widget) {
-                                widget.setData('caption', this.getValue());
                             }
                         }
                     ]
