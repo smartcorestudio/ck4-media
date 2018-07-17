@@ -16,39 +16,33 @@
                     label: lang.info,
                     elements: [
                         {
-
-                            type: 'hbox',
-                            children: [
-                                {
-                                    id: 'src',
-                                    type: 'text',
-                                    label: common.url,
-                                    setup: function (widget) {
-                                        this.setValue(widget.data.src);
-                                    },
-                                    commit: function (widget) {
-                                        widget.setData('src', this.getValue());
-                                        widget.setData('type', CKEDITOR.media.type(this.getValue()));
-                                    },
-                                    validate: function () {
-                                        if (!this.getValue().trim()) {
-                                            return lang.validateRequired;
-                                        }
-
-                                        if (!CKEDITOR.media.type(this.getValue())) {
-                                            return lang.validateType;
-                                        }
-
-                                        return true;
-                                    }
-                                },
-                                {
-                                    id: 'browse',
-                                    type: 'button',
-                                    label: common.browseServer,
-                                    hidden: true
+                            id: 'src',
+                            type: 'text',
+                            label: common.url,
+                            setup: function (widget) {
+                                this.setValue(widget.data.src);
+                            },
+                            commit: function (widget) {
+                                widget.setData('src', this.getValue());
+                                widget.setData('type', CKEDITOR.media.type(this.getValue()));
+                            },
+                            validate: function () {
+                                if (!this.getValue().trim()) {
+                                    return lang.validateRequired;
                                 }
-                            ]
+
+                                if (!CKEDITOR.media.type(this.getValue())) {
+                                    return lang.validateType;
+                                }
+
+                                return true;
+                            }
+                        },
+                        {
+                            id: 'browse',
+                            type: 'button',
+                            label: common.browseServer,
+                            hidden: true
                         },
                         {
                             type: 'hbox',
