@@ -111,12 +111,13 @@
                     }
                 },
                 data: function () {
-                    if (!this.data.src || !this.data.type) {
+                    var widget = this;
+                    var el = widget.element;
+                    var i;
+
+                    if (!widget.data.src || !widget.data.type) {
                         return;
                     }
-
-                    var el = this.element;
-                    var i;
 
                     el.removeClass('media');
                     el.removeClass(align.left);
@@ -127,13 +128,13 @@
                         el.removeClass(types[i]);
                     }
 
-                    var type = this.data.type;
+                    var type = widget.data.type;
                     var media = el.getName() === 'figure' ? el.getChild(0) : el;
                     var caption = el.getName() === 'figure' ? el.getChild(1) : null;
 
-                    this.inline = !this.data.caption;
+                    widget.inline = !widget.data.caption;
 
-                    if (this.data.caption && el.getName() !== 'figure') {
+                    if (widget.data.caption && el.getName() !== 'figure') {
                         el.renameNode('figure');
 
                         for (i = 0; i < attr.length; i++) {
@@ -144,21 +145,21 @@
                         el.append(media, true);
                         caption = new CKEDITOR.dom.element('figcaption');
                         el.append(caption);
-                        this.initEditable('caption', editables.caption);
+                        widget.initEditable('caption', editables.caption);
                         el.addClass('media');
                         el.addClass(type);
-                        this.wrapper.renameNode('div');
-                        this.wrapper.removeClass('cke_widget_inline');
-                        this.wrapper.addClass('cke_widget_block');
-                    } else if (!this.data.caption && el.getName() === 'figure') {
+                        widget.wrapper.renameNode('div');
+                        widget.wrapper.removeClass('cke_widget_inline');
+                        widget.wrapper.addClass('cke_widget_block');
+                    } else if (!widget.data.caption && el.getName() === 'figure') {
                         el.renameNode(type);
                         media.remove();
                         media = el;
                         caption.remove();
                         caption = null;
-                        this.wrapper.renameNode('span');
-                        this.wrapper.removeClass('cke_widget_block');
-                        this.wrapper.addClass('cke_widget_inline');
+                        widget.wrapper.renameNode('span');
+                        widget.wrapper.removeClass('cke_widget_block');
+                        widget.wrapper.addClass('cke_widget_inline');
                     }
 
                     if (media.getName() !== type) {
@@ -166,23 +167,23 @@
                     }
 
                     // Media attributes
-                    media.setAttribute('src', this.data.src);
+                    media.setAttribute('src', widget.data.src);
 
-                    if (this.data.width) {
-                        media.setAttribute('width', this.data.width);
+                    if (widget.data.width) {
+                        media.setAttribute('width', widget.data.width);
                     } else {
                         media.removeAttribute('width');
                     }
 
-                    if (this.data.height) {
-                        media.setAttribute('height', this.data.height);
+                    if (widget.data.height) {
+                        media.setAttribute('height', widget.data.height);
                     } else {
                         media.removeAttribute('height');
                     }
 
                     if (type === 'img') {
                         media.removeAttribute('allowfullscreen');
-                        media.setAttribute('alt', this.data.alt);
+                        media.setAttribute('alt', widget.data.alt);
                         media.removeAttribute('controls');
                     } else if (['audio', 'video'].indexOf(type) >= 0) {
                         media.removeAttribute('allowfullscreen');
@@ -195,8 +196,8 @@
                     }
 
                     // Align
-                    if (this.data.align && align.hasOwnProperty(this.data.align)) {
-                        el.addClass(align[this.data.align]);
+                    if (widget.data.align && align.hasOwnProperty(widget.data.align)) {
+                        el.addClass(align[widget.data.align]);
                     }
                 }
             });
