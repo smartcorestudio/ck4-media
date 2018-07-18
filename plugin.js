@@ -236,8 +236,13 @@
         getTypeFromUrl: function (url) {
             var xhr = new XMLHttpRequest();
 
-            xhr.open('HEAD', url, false);
-            xhr.send();
+            try {
+                xhr.open('HEAD', url, false);
+                xhr.send();
+            } catch (e) {
+                console.log(e);
+                return '';
+            }
 
             if (xhr.readyState === xhr.DONE && xhr.status >= 200 && xhr.status < 300) {
                 var type = xhr.getResponseHeader('Content-Type').split(';')[0].trim();
