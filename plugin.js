@@ -114,13 +114,17 @@
                 data: function () {
                     var widget = this;
                     var el = widget.element;
+                    var media = el;
+                    var caption = null;
 
                     if (!widget.data.src || !widget.data.type) {
                         return;
                     }
 
-                    var media = el.getName() === 'figure' ? el.getChild(0) : el;
-                    var caption = el.getName() === 'figure' ? el.getChild(1) : null;
+                    if (el.getName() === 'figure') {
+                        media = el.getChild(0);
+                        caption = el.getChild(1);
+                    }
 
                     widget.inline = !widget.data.caption;
 
