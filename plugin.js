@@ -121,6 +121,10 @@
                         return;
                     }
 
+                    CKEDITOR.media.getTypes().concat(['media', align.left, align.right]).forEach(function (item) {
+                        el.removeClass(item);
+                    });
+
                     if (el.getName() === 'figure') {
                         media = el.getChild(0);
                         caption = el.getChild(1);
@@ -133,7 +137,6 @@
                         attr.forEach(function (item) {
                             el.removeAttribute(item);
                         });
-                        el.addClass('media');
                         media = new CKEDITOR.dom.element(widget.data.type);
                         el.append(media, true);
                         caption = new CKEDITOR.dom.element('figcaption');
@@ -144,7 +147,6 @@
                         widget.wrapper.addClass('cke_widget_block');
                     } else if (!widget.data.caption && el.getName() === 'figure') {
                         el.renameNode(widget.data.type);
-                        el.removeClass('media');
                         media.remove();
                         media = el;
                         caption.remove();
@@ -152,6 +154,11 @@
                         widget.wrapper.renameNode('span');
                         widget.wrapper.removeClass('cke_widget_block');
                         widget.wrapper.addClass('cke_widget_inline');
+                    }
+
+                    if (el.getName() === 'figure') {
+                        el.addClass('media');
+                        el.addClass(widget.data.type);
                     }
 
                     if (media.getName() !== widget.data.type) {
@@ -188,13 +195,9 @@
                     }
 
                     // Align
-                    Object.getOwnPropertyNames(align).forEach(function (item) {
-                        if (widget.data.align === item) {
-                            el.addClass(align[item]);
-                        } else {
-                            el.removeClass(align[item]);
-                        }
-                    });
+                    if (widget.data.align && align.hasOwnProperty(widget.data.align)) {
+                        el.addClass(align[widget.data.align]);
+                    }
                 }
             });
 
