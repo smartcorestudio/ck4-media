@@ -119,10 +119,6 @@
                         return;
                     }
 
-                    CKEDITOR.media.getTypes().concat(['media', align.left, align.right]).forEach(function (item) {
-                        el.removeClass(item);
-                    });
-
                     var media = el.getName() === 'figure' ? el.getChild(0) : el;
                     var caption = el.getName() === 'figure' ? el.getChild(1) : null;
 
@@ -133,6 +129,7 @@
                         attr.forEach(function (item) {
                             el.removeAttribute(item);
                         });
+                        el.addClass('media');
                         media = new CKEDITOR.dom.element(widget.data.type);
                         el.append(media, true);
                         caption = new CKEDITOR.dom.element('figcaption');
@@ -143,6 +140,7 @@
                         widget.wrapper.addClass('cke_widget_block');
                     } else if (!widget.data.caption && el.getName() === 'figure') {
                         el.renameNode(widget.data.type);
+                        el.removeClass('media');
                         media.remove();
                         media = el;
                         caption.remove();
@@ -150,11 +148,6 @@
                         widget.wrapper.renameNode('span');
                         widget.wrapper.removeClass('cke_widget_block');
                         widget.wrapper.addClass('cke_widget_inline');
-                    }
-
-                    if (el.getName() === 'figure') {
-                        el.addClass('media');
-                        el.addClass(widget.data.type);
                     }
 
                     if (media.getName() !== widget.data.type) {
@@ -191,6 +184,10 @@
                     }
 
                     // Align
+                    [align.left, align.right].forEach(function (item) {
+                        el.removeClass(item);
+                    });
+
                     if (widget.data.align && align.hasOwnProperty(widget.data.align)) {
                         el.addClass(align[widget.data.align]);
                     }
