@@ -1,6 +1,6 @@
 'use strict';
 
-(function (CKEDITOR) {
+(function (document, window, CKEDITOR) {
     var align = {left: 'left', center: 'center', right: 'right'};
     var attr = ['src', 'width', 'height', 'alt'];
     var editables = {
@@ -9,7 +9,6 @@
             allowedContent: 'em s strong sub sup u; a[!href]'
         }
     };
-    var types = ['audio', 'iframe', 'img', 'video'];
 
     CKEDITOR.plugins.add('media', {
         requires: 'dialog,widget',
@@ -17,13 +16,15 @@
         hidpi: true,
         lang: 'de,en',
         init: function (editor) {
+            var types = Object.getOwnPropertyNames(CKEDITOR.media.type).join(' ');
+
             editor.widgets.add('media', {
                 button: editor.lang.media.title,
                 dialog: 'media',
                 template: '<figure class="media"><img /><figcaption></figcaption></figure>',
                 editables: editables,
-                allowedContent: 'figure(!media, left, center, right); a[!href]; ' + types.join(' ') + '[!src, width, height, alt, controls, allowfullscreen]; figcaption',
-                requiredContent: 'figure(media); ' + types.join(' ') + '[src]; figcaption',
+                allowedContent: 'figure(!media, left, center, right); a[!href]; ' + types + '[!src, width, height, alt, controls, allowfullscreen]; figcaption',
+                requiredContent: 'figure(media); ' + types + '[src]; figcaption',
                 defaults: {
                     align: '',
                     alt: '',
@@ -39,7 +40,7 @@
                         return e.name === 'figure' && e.hasClass('media');
                     };
                     var med = function (e) {
-                        return types.indexOf(e.name) >= 0;
+                        return CKEDITOR.media.type.hasOwnProperty(e.name);
                     };
                     var link = function (e) {
                         return e.name === 'a' && e.children.length === 1 && med(e.children[0]);
@@ -91,13 +92,15 @@
                         widget.inline = true;
                     }
 
-                    // Media type
-                    widget.setData('type', media.getName());
+                    // Media
+                    if (media.hasAttribute('src')) {
+                        media.setAttribute('src', CKEDITOR.media.getUrl(media.getAttribute('src')));
+                        widget.setData('type', CKEDITOR.media.getType(media.getAttribute('src')));
+                    }
 
-                    // Media attributes
-                    attr.forEach(function (a) {
-                        if (media.hasAttribute(a)) {
-                            widget.setData(a, media.getAttribute(a));
+                    attr.forEach(function (item) {
+                        if (media.hasAttribute(item)) {
+                            widget.setData(item, media.getAttribute(item));
                         }
                     });
 
@@ -113,22 +116,15 @@
                 data: function () {
                     var widget = this;
                     var el = widget.element;
-                    var i;
 
                     if (!widget.data.src || !widget.data.type) {
                         return;
                     }
 
-                    el.removeClass('media');
-                    el.removeClass(align.left);
-                    el.removeClass(align.center);
-                    el.removeClass(align.right);
+                    Object.getOwnPropertyNames(CKEDITOR.media.type).concat(['media', align.left, align.center, align.right]).forEach(function (item) {
+                        el.removeClass(item);
+                    });
 
-                    for (i = 0; i < types.length; i++) {
-                        el.removeClass(types[i]);
-                    }
-
-                    var type = widget.data.type;
                     var media = el.getName() === 'figure' ? el.getChild(0) : el;
                     var caption = el.getName() === 'figure' ? el.getChild(1) : null;
 
@@ -136,23 +132,21 @@
 
                     if (widget.data.caption && el.getName() !== 'figure') {
                         el.renameNode('figure');
-
-                        for (i = 0; i < attr.length; i++) {
-                            el.removeAttribute(attr[i]);
-                        }
-
-                        media = new CKEDITOR.dom.element(type);
+                        attr.forEach(function (item) {
+                            el.removeAttribute(item);
+                        });
+                        media = new CKEDITOR.dom.element(widget.data.type);
                         el.append(media, true);
                         caption = new CKEDITOR.dom.element('figcaption');
                         el.append(caption);
                         widget.initEditable('caption', editables.caption);
                         el.addClass('media');
-                        el.addClass(type);
+                        el.addClass(widget.data.type);
                         widget.wrapper.renameNode('div');
                         widget.wrapper.removeClass('cke_widget_inline');
                         widget.wrapper.addClass('cke_widget_block');
                     } else if (!widget.data.caption && el.getName() === 'figure') {
-                        el.renameNode(type);
+                        el.renameNode(widget.data.type);
                         media.remove();
                         media = el;
                         caption.remove();
@@ -162,8 +156,8 @@
                         widget.wrapper.addClass('cke_widget_inline');
                     }
 
-                    if (media.getName() !== type) {
-                        media.renameNode(type);
+                    if (media.getName() !== widget.data.type) {
+                        media.renameNode(widget.data.type);
                     }
 
                     // Media attributes
@@ -181,15 +175,15 @@
                         media.removeAttribute('height');
                     }
 
-                    if (type === 'img') {
+                    if (widget.data.type === 'img') {
                         media.removeAttribute('allowfullscreen');
                         media.setAttribute('alt', widget.data.alt);
                         media.removeAttribute('controls');
-                    } else if (['audio', 'video'].indexOf(type) >= 0) {
+                    } else if (['audio', 'video'].indexOf(widget.data.type) >= 0) {
                         media.removeAttribute('allowfullscreen');
                         media.removeAttribute('alt');
                         media.setAttribute('controls', 'controls');
-                    } else if (type === 'iframe') {
+                    } else if (widget.data.type === 'iframe') {
                         media.setAttribute('allowfullscreen', 'allowfullscreen');
                         media.removeAttribute('alt');
                         media.removeAttribute('controls');
@@ -220,26 +214,16 @@
      * Public API
      */
     CKEDITOR.media = {
-        audio: [
-            'audio/aac', 'audio/flac', 'audio/mp3', 'audio/ogg', 'audio/wav', 'audio/wave', 'audio/webm',
-            'audio/x-aac', 'audio/x-flac', 'audio/x-pn-wav', 'audio/x-wav'
-        ],
-        iframe: ['text/html'],
-        img: ['image/gif', 'image/jpeg', 'image/png', 'image/svg+xml', 'image/webp'],
-        video: ['video/mp4', 'video/ogg', 'video/webm'],
-        isAudio: function (type) {
-            return this.audio.indexOf(type) >= 0
+        type: {
+            audio: [
+                'audio/aac', 'audio/flac', 'audio/mp3', 'audio/ogg', 'audio/wav', 'audio/wave', 'audio/webm',
+                'audio/x-aac', 'audio/x-flac', 'audio/x-pn-wav', 'audio/x-wav'
+            ],
+            iframe: ['text/html'],
+            img: ['image/gif', 'image/jpeg', 'image/png', 'image/svg+xml', 'image/webp'],
+            video: ['video/mp4', 'video/ogg', 'video/webm']
         },
-        isIframe: function (type) {
-            return this.iframe.indexOf(type) >= 0;
-        },
-        isImg: function (type) {
-            return this.img.indexOf(type) >= 0;
-        },
-        isVideo: function (type) {
-            return this.video.indexOf(type) >= 0
-        },
-        type: function (url) {
+        getType: function (url) {
             var xhr = new XMLHttpRequest();
 
             xhr.open('HEAD', url, false);
@@ -248,24 +232,31 @@
             if (xhr.readyState === xhr.DONE && xhr.status >= 200 && xhr.status < 300) {
                 var type = xhr.getResponseHeader('Content-Type').split(';')[0].trim();
 
-                if (this.isAudio(type)) {
+                if (this.type.audio.indexOf(type) >= 0) {
                     return 'audio';
                 }
 
-                if (this.isIframe(type)) {
+                if (this.type.iframe.indexOf(type) >= 0) {
                     return 'iframe';
                 }
 
-                if (this.isImg(type)) {
+                if (this.type.img.indexOf(type) >= 0) {
                     return 'img';
                 }
 
-                if (this.isVideo(type)) {
+                if (this.type.video.indexOf(type) >= 0) {
                     return 'video';
                 }
             }
 
             return '';
+        },
+        getUrl: function (url) {
+            var a = document.createElement('a');
+
+            a.href = url;
+
+            return a.origin === window.origin ? a.pathname : a.href;
         }
     };
-})(CKEDITOR);
+})(document, window, CKEDITOR);

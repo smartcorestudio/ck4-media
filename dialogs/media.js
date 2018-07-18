@@ -24,14 +24,14 @@
                             },
                             commit: function (widget) {
                                 widget.setData('src', this.getValue());
-                                widget.setData('type', CKEDITOR.media.type(this.getValue()));
+                                widget.setData('type', CKEDITOR.media.getType(this.getValue()));
                             },
                             validate: function () {
                                 if (!this.getValue().trim()) {
                                     return lang.validateRequired;
                                 }
 
-                                if (!CKEDITOR.media.type(this.getValue())) {
+                                if (!CKEDITOR.media.getType(this.getValue())) {
                                     return lang.validateType;
                                 }
 
