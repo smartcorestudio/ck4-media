@@ -188,13 +188,13 @@
                     }
 
                     // Align
-                    [align.left, align.right].forEach(function (item) {
-                        el.removeClass(item);
+                    Object.getOwnPropertyNames(align).forEach(function (item) {
+                        if (widget.data.align === item) {
+                            el.addClass(align[item]);
+                        } else {
+                            el.removeClass(align[item]);
+                        }
                     });
-
-                    if (widget.data.align && align.hasOwnProperty(widget.data.align)) {
-                        el.addClass(align[widget.data.align]);
-                    }
                 }
             });
 
