@@ -208,7 +208,7 @@
         var button = ev.data.definition.contents[0].elements[1];
 
         if (!!ev.editor.plugins.mediabrowser) {
-            button.mediabrowser = {alt: 'info:alt', src: 'info:src'};
+            button.mediabrowser = {alt: 'info:alt', src: 'info:src', type: 'info:type'};
         } else if (!!ev.editor.plugins.filebrowser) {
             button.filebrowser = 'info:src';
         }
