@@ -140,8 +140,6 @@
                         caption = new CKEDITOR.dom.element('figcaption');
                         el.append(caption);
                         widget.initEditable('caption', editables.caption);
-                        el.addClass('media');
-                        el.addClass(widget.data.type);
                         widget.wrapper.renameNode('div');
                         widget.wrapper.removeClass('cke_widget_inline');
                         widget.wrapper.addClass('cke_widget_block');
@@ -154,6 +152,11 @@
                         widget.wrapper.renameNode('span');
                         widget.wrapper.removeClass('cke_widget_block');
                         widget.wrapper.addClass('cke_widget_inline');
+                    }
+
+                    if (el.getName() === 'figure') {
+                        el.addClass('media');
+                        el.addClass(widget.data.type);
                     }
 
                     if (media.getName() !== widget.data.type) {
