@@ -123,7 +123,6 @@
                             items: [
                                 [common.alignNone, ''],
                                 [common.left, 'left'],
-                                [common.center, 'center'],
                                 [common.right, 'right']
                             ],
                             setup: function (widget) {

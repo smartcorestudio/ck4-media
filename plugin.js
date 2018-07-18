@@ -1,7 +1,7 @@
 'use strict';
 
 (function (document, window, CKEDITOR) {
-    var align = {left: 'left', center: 'center', right: 'right'};
+    var align = {left: 'media-left', right: 'media-right'};
     var attr = ['src', 'width', 'height', 'alt'];
     var editables = {
         caption: {
@@ -107,8 +107,6 @@
                     // Align
                     if (el.hasClass(align.left)) {
                         widget.setData('align', 'left');
-                    } else if (el.hasClass(align.center)) {
-                        widget.setData('align', 'center');
                     } else if (el.hasClass(align.right)) {
                         widget.setData('align', 'right');
                     }
@@ -121,7 +119,7 @@
                         return;
                     }
 
-                    CKEDITOR.media.getTypes().concat(['media', align.left, align.center, align.right]).forEach(function (item) {
+                    CKEDITOR.media.getTypes().concat(['media', align.left, align.right]).forEach(function (item) {
                         el.removeClass(item);
                     });
 
