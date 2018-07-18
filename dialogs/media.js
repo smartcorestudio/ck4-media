@@ -27,7 +27,8 @@
                             },
                             validate: CKEDITOR.dialog.validate.notEmpty(lang.validateRequired),
                             onChange: function () {
-                                this.getDialog().getContentElement('info', 'type').setValue(CKEDITOR.media.getTypeFromUrl(this.getValue()));
+                                var type = this.getValue() ? CKEDITOR.media.getTypeFromUrl(this.getValue()) : '';
+                                this.getDialog().getContentElement('info', 'type').setValue(type);
                             }
                         },
                         {
