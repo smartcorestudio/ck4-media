@@ -3,11 +3,15 @@
 (function (CKEDITOR) {
     CKEDITOR.plugins.setLang('media', 'en', {
         alt: 'Alternative Text',
+        audio: 'Audio',
         caption: 'Caption',
+        iframe: 'Iframe',
+        image: 'Image',
         info: 'Info',
         link: 'Link',
         title: 'Media - Image, Audio, Video, Iframe',
+        type: 'Type',
         validateRequired: 'This field is required',
-        validateType: 'Invalid media type'
+        video: 'Video'
     });
 })(CKEDITOR);

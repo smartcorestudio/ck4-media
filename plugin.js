@@ -16,7 +16,7 @@
         hidpi: true,
         lang: 'de,en',
         init: function (editor) {
-            var types = Object.getOwnPropertyNames(CKEDITOR.media.type).join(' ');
+            var types = CKEDITOR.media.getTypes().join(' ');
 
             editor.widgets.add('media', {
                 button: editor.lang.media.title,
@@ -40,7 +40,7 @@
                         return e.name === 'figure' && e.hasClass('media');
                     };
                     var med = function (e) {
-                        return CKEDITOR.media.type.hasOwnProperty(e.name);
+                        return CKEDITOR.media.hasType(e.name);
                     };
                     var link = function (e) {
                         return e.name === 'a' && e.children.length === 1 && med(e.children[0]);
@@ -95,7 +95,7 @@
                     // Media
                     if (media.hasAttribute('src')) {
                         media.setAttribute('src', CKEDITOR.media.getUrl(media.getAttribute('src')));
-                        widget.setData('type', CKEDITOR.media.getType(media.getAttribute('src')));
+                        widget.setData('type', CKEDITOR.media.getTypeFromUrl(media.getAttribute('src')));
                     }
 
                     attr.forEach(function (item) {
@@ -121,7 +121,7 @@
                         return;
                     }
 
-                    Object.getOwnPropertyNames(CKEDITOR.media.type).concat(['media', align.left, align.center, align.right]).forEach(function (item) {
+                    CKEDITOR.media.getTypes().concat(['media', align.left, align.center, align.right]).forEach(function (item) {
                         el.removeClass(item);
                     });
 
@@ -201,6 +201,10 @@
     });
 
     CKEDITOR.on('dialogDefinition', function (ev) {
+        if (ev.data.name !== 'media') {
+            return;
+        }
+
         var button = ev.data.definition.contents[0].elements[1];
 
         if (!!ev.editor.plugins.mediabrowser) {
@@ -214,7 +218,7 @@
      * Public API
      */
     CKEDITOR.media = {
-        type: {
+        types: {
             audio: [
                 'audio/aac', 'audio/flac', 'audio/mp3', 'audio/ogg', 'audio/wav', 'audio/wave', 'audio/webm',
                 'audio/x-aac', 'audio/x-flac', 'audio/x-pn-wav', 'audio/x-wav'
@@ -223,7 +227,13 @@
             img: ['image/gif', 'image/jpeg', 'image/png', 'image/svg+xml', 'image/webp'],
             video: ['video/mp4', 'video/ogg', 'video/webm']
         },
-        getType: function (url) {
+        getTypes: function () {
+            return Object.getOwnPropertyNames(this.types);
+        },
+        hasType: function (type) {
+            return this.types.hasOwnProperty(type);
+        },
+        getTypeFromUrl: function (url) {
             var xhr = new XMLHttpRequest();
 
             xhr.open('HEAD', url, false);
@@ -232,19 +242,19 @@
             if (xhr.readyState === xhr.DONE && xhr.status >= 200 && xhr.status < 300) {
                 var type = xhr.getResponseHeader('Content-Type').split(';')[0].trim();
 
-                if (this.type.audio.indexOf(type) >= 0) {
+                if (this.types.audio.indexOf(type) >= 0) {
                     return 'audio';
                 }
 
-                if (this.type.iframe.indexOf(type) >= 0) {
+                if (this.types.iframe.indexOf(type) >= 0) {
                     return 'iframe';
                 }
 
-                if (this.type.img.indexOf(type) >= 0) {
+                if (this.types.img.indexOf(type) >= 0) {
                     return 'img';
                 }
 
-                if (this.type.video.indexOf(type) >= 0) {
+                if (this.types.video.indexOf(type) >= 0) {
                     return 'video';
                 }
             }

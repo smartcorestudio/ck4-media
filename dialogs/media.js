@@ -24,25 +24,33 @@
                             },
                             commit: function (widget) {
                                 widget.setData('src', this.getValue());
-                                widget.setData('type', CKEDITOR.media.getType(this.getValue()));
                             },
-                            validate: function () {
-                                if (!this.getValue().trim()) {
-                                    return lang.validateRequired;
-                                }
-
-                                if (!CKEDITOR.media.getType(this.getValue())) {
-                                    return lang.validateType;
-                                }
-
-                                return true;
-                            }
+                            validate: CKEDITOR.dialog.validate.notEmpty(lang.validateRequired)
                         },
                         {
                             id: 'browse',
                             type: 'button',
                             label: common.browseServer,
                             hidden: true
+                        },
+                        {
+                            id: 'type',
+                            type: 'select',
+                            label: lang.type,
+                            items: [
+                                [common.notSet, ''],
+                                [lang.image, 'img'],
+                                [lang.audio, 'audio'],
+                                [lang.video, 'video'],
+                                [lang.iframe, 'iframe']
+                            ],
+                            setup: function (widget) {
+                                this.setValue(widget.data.type);
+                            },
+                            commit: function (widget) {
+                                widget.setData('type', this.getValue());
+                            },
+                            validate: CKEDITOR.dialog.validate.notEmpty(lang.validateRequired)
                         },
                         {
                             id: 'alt',
