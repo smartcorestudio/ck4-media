@@ -25,7 +25,10 @@
                             commit: function (widget) {
                                 widget.setData('src', this.getValue());
                             },
-                            validate: CKEDITOR.dialog.validate.notEmpty(lang.validateRequired)
+                            validate: CKEDITOR.dialog.validate.notEmpty(lang.validateRequired),
+                            onChange: function () {
+                                this.getDialog().getContentElement('info', 'type').setValue(CKEDITOR.media.getTypeFromUrl(this.getValue()));
+                            }
                         },
                         {
                             id: 'browse',
