@@ -115,9 +115,11 @@
                     var widget = this;
                     var el = widget.element;
                     var media = el;
+                    var type = widget.data.type;
+                    var name;
                     var caption = null;
 
-                    if (!widget.data.src || !widget.data.type) {
+                    if (!widget.data.src || !type || !(name = CKEDITOR.media.getTypeElement(type))) {
                         return;
                     }
 
@@ -137,7 +139,7 @@
                         attr.forEach(function (item) {
                             el.removeAttribute(item);
                         });
-                        media = new CKEDITOR.dom.element(widget.data.type);
+                        media = new CKEDITOR.dom.element(name);
                         el.append(media, true);
                         caption = new CKEDITOR.dom.element('figcaption');
                         el.append(caption);
@@ -146,7 +148,7 @@
                         widget.wrapper.removeClass('cke_widget_inline');
                         widget.wrapper.addClass('cke_widget_block');
                     } else if (!widget.data.caption && el.getName() === 'figure') {
-                        el.renameNode(widget.data.type);
+                        el.renameNode(name);
                         media.remove();
                         media = el;
                         caption.remove();
@@ -158,11 +160,11 @@
 
                     if (el.getName() === 'figure') {
                         el.addClass('media');
-                        el.addClass(widget.data.type);
+                        el.addClass(type);
                     }
 
-                    if (media.getName() !== widget.data.type) {
-                        media.renameNode(widget.data.type);
+                    if (media.getName() !== name) {
+                        media.renameNode(name);
                     }
 
                     // Media attributes
@@ -180,15 +182,15 @@
                         media.removeAttribute('height');
                     }
 
-                    if (widget.data.type === 'img') {
+                    if (type === 'image') {
                         media.removeAttribute('allowfullscreen');
                         media.setAttribute('alt', widget.data.alt);
                         media.removeAttribute('controls');
-                    } else if (['audio', 'video'].indexOf(widget.data.type) >= 0) {
+                    } else if (['audio', 'video'].indexOf(type) >= 0) {
                         media.removeAttribute('allowfullscreen');
                         media.removeAttribute('alt');
                         media.setAttribute('controls', 'controls');
-                    } else if (widget.data.type === 'iframe') {
+                    } else if (type === 'iframe') {
                         media.setAttribute('allowfullscreen', 'allowfullscreen');
                         media.removeAttribute('alt');
                         media.removeAttribute('controls');
@@ -224,13 +226,25 @@
      */
     CKEDITOR.media = {
         types: {
-            audio: [
-                'audio/aac', 'audio/flac', 'audio/mp3', 'audio/ogg', 'audio/wav', 'audio/wave', 'audio/webm',
-                'audio/x-aac', 'audio/x-flac', 'audio/x-pn-wav', 'audio/x-wav'
-            ],
-            iframe: ['text/html'],
-            img: ['image/gif', 'image/jpeg', 'image/png', 'image/svg+xml', 'image/webp'],
-            video: ['video/mp4', 'video/ogg', 'video/webm']
+            audio: {
+                element: 'audio',
+                mime: [
+                    'audio/aac', 'audio/flac', 'audio/mp3', 'audio/ogg', 'audio/wav', 'audio/wave', 'audio/webm',
+                    'audio/x-aac', 'audio/x-flac', 'audio/x-pn-wav', 'audio/x-wav'
+                ]
+            },
+            iframe: {
+                element: 'iframe',
+                mime: ['text/html']
+            },
+            image: {
+                element: 'img',
+                mime: ['image/gif', 'image/jpeg', 'image/png', 'image/svg+xml', 'image/webp']
+            },
+            video: {
+                element: 'video',
+                mime: ['video/mp4', 'video/ogg', 'video/webm']
+            }
         },
         getTypes: function () {
             return Object.getOwnPropertyNames(this.types);
@@ -251,25 +265,19 @@
 
             if (xhr.readyState === xhr.DONE && xhr.status >= 200 && xhr.status < 300) {
                 var type = xhr.getResponseHeader('Content-Type').split(';')[0].trim();
+                var types = this.getTypes();
 
-                if (this.types.audio.indexOf(type) >= 0) {
-                    return 'audio';
-                }
-
-                if (this.types.iframe.indexOf(type) >= 0) {
-                    return 'iframe';
-                }
-
-                if (this.types.img.indexOf(type) >= 0) {
-                    return 'img';
-                }
-
-                if (this.types.video.indexOf(type) >= 0) {
-                    return 'video';
+                for (var i = 0; i < types.length; ++i) {
+                    if (this.types[types[i]].mime.indexOf(type) >= 0) {
+                        return types[i];
+                    }
                 }
             }
 
             return '';
+        },
+        getTypeElement: function (type) {
+            return this.hasType(type) ? this.types[type].element : null;
         },
         getUrl: function (url) {
             var a = document.createElement('a');

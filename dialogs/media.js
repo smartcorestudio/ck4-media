@@ -4,6 +4,19 @@
     CKEDITOR.dialog.add('media', function (editor) {
         var lang = editor.lang.media;
         var common = editor.lang.common;
+        var types = [[common.notSet, '']].concat(CKEDITOR.media.getTypes().map(function (item) {
+            return [lang[item], item];
+        }).sort(function (a, b) {
+            if (a[0] < b[0]) {
+                return -1;
+            }
+
+            if (a[0] > b[0]) {
+                return 1;
+            }
+
+            return 0;
+        }));
 
         return {
             title: lang.title,
@@ -41,13 +54,7 @@
                             id: 'type',
                             type: 'select',
                             label: lang.type,
-                            items: [
-                                [common.notSet, ''],
-                                [lang.image, 'img'],
-                                [lang.audio, 'audio'],
-                                [lang.video, 'video'],
-                                [lang.iframe, 'iframe']
-                            ],
+                            items: types,
                             setup: function (widget) {
                                 this.setValue(widget.data.type);
                             },
