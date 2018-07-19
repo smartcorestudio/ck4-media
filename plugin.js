@@ -1,7 +1,7 @@
 'use strict';
 
 (function (document, window, CKEDITOR) {
-    var align = {left: 'media-left', right: 'media-right'};
+    var align = {left: 'left', right: 'right'};
     var attr = ['src', 'width', 'height', 'alt'];
     var editables = {
         caption: {
