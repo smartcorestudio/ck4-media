@@ -259,7 +259,6 @@
                 xhr.open('HEAD', url, false);
                 xhr.send();
             } catch (e) {
-                console.log(e);
                 return '';
             }
 
