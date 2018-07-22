@@ -281,7 +281,6 @@
         },
         getUrl: function (url) {
             var a = document.createElement('a');
-
             a.href = url;
 
             return a.origin === window.origin ? a.pathname : a.href;
