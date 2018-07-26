@@ -2,7 +2,7 @@
 
 (function (document, window, CKEDITOR) {
     var align = {left: 'left', right: 'right'};
-    var attr = ['src', 'width', 'height', 'alt'];
+    var attr = ['alt', 'height', 'src', 'width'];
     var editables = {
         caption: {
             selector: 'figcaption',
