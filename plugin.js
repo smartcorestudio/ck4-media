@@ -227,7 +227,6 @@
                         dialog.getContentElement('info', item).setValue(data[item]);
                     }
                 });
-
             };
         } else if (!!ev.editor.plugins.filebrowser) {
             button.filebrowser = 'info:src';
