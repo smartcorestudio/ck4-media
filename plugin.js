@@ -215,7 +215,20 @@
         var button = ev.data.definition.contents[0].elements[1];
 
         if (!!ev.editor.plugins.mediabrowser) {
-            button.mediabrowser = {alt: 'info:alt', src: 'info:src', type: 'info:type'};
+            button.mediabrowser = function (data) {
+                if (!data.src) {
+                    return;
+                }
+
+                var dialog = this.getDialog();
+
+                ['alt', 'src', 'type'].forEach(function (item) {
+                    if (!!data[item]) {
+                        dialog.getContentElement('info', item).setValue(data[item]);
+                    }
+                });
+
+            };
         } else if (!!ev.editor.plugins.filebrowser) {
             button.filebrowser = 'info:src';
         }
