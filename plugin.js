@@ -21,7 +21,7 @@
                 dialog: 'media',
                 template: '<figure class="image"><img /><figcaption></figcaption></figure>',
                 editables: editables,
-                allowedContent: 'figure; a[!href]; audio iframe img video[!src, width, height, alt, controls, allowfullscreen]; figcaption',
+                allowedContent: 'figure(*); a[!href]; audio iframe img video[!src, width, height, alt, controls, allowfullscreen]; figcaption',
                 requiredContent: 'figure; audio iframe img video[src]; figcaption',
                 defaults: {
                     align: '',
@@ -34,11 +34,22 @@
                     width: ''
                 },
                 upcast: function (el) {
+                    var cls = function (e) {
+                        var types = CKEDITOR.media.getTypes();
+
+                        for (var i = 0; i < types.length; ++i) {
+                            if (e.hasClass(types[i])) {
+                                return true;
+                            }
+                        }
+
+                        return false;
+                    };
                     var crit = function (e) {
-                        return e.name === 'figure' && (e.hasClass('audio') || e.hasClass('iframe') || e.hasClass('image') || e.hasClass('video'));
+                        return e.name === 'figure' && cls(e);
                     };
                     var med = function (e) {
-                        return CKEDITOR.media.hasType(e.name);
+                        return !!CKEDITOR.media.getTypeFromElement(e.name);
                     };
                     var link = function (e) {
                         return e.name === 'a' && e.children.length === 1 && med(e.children[0]);
@@ -260,6 +271,17 @@
         },
         hasType: function (type) {
             return this.types.hasOwnProperty(type);
+        },
+        getTypeFromElement: function (element) {
+            var types = this.getTypes();
+
+            for (var i = 0; i < types.length; ++i) {
+                if (this.types[types[i]].element === element) {
+                    return types[i];
+                }
+            }
+
+            return null;
         },
         getTypeFromUrl: function (url) {
             var xhr = new XMLHttpRequest();
