@@ -19,10 +19,10 @@
             editor.widgets.add('media', {
                 button: editor.lang.media.title,
                 dialog: 'media',
-                template: '<figure class="image"><img /><figcaption></figcaption></figure>',
+                template: '<figure class="media"><img /><figcaption></figcaption></figure>',
                 editables: editables,
-                allowedContent: 'figure(*); a[!href]; audio iframe img video[!src, width, height, alt, controls, allowfullscreen]; figcaption',
-                requiredContent: 'figure; audio iframe img video[src]; figcaption',
+                allowedContent: 'figure(!media, left, right); a[!href]; audio iframe img video[!src, width, height, alt, controls, allowfullscreen]; figcaption',
+                requiredContent: 'figure(media); audio iframe img video[src]; figcaption',
                 defaults: {
                     align: '',
                     alt: '',
@@ -34,19 +34,8 @@
                     width: ''
                 },
                 upcast: function (el) {
-                    var cls = function (e) {
-                        var types = CKEDITOR.media.getTypes();
-
-                        for (var i = 0; i < types.length; ++i) {
-                            if (e.hasClass(types[i])) {
-                                return true;
-                            }
-                        }
-
-                        return false;
-                    };
                     var crit = function (e) {
-                        return e.name === 'figure' && cls(e);
+                        return e.name === 'figure' && e.hasClass('media');
                     };
                     var med = function (e) {
                         return !!CKEDITOR.media.getTypeFromElement(e.name);
@@ -132,7 +121,7 @@
                         return;
                     }
 
-                    CKEDITOR.media.getTypes().concat([align.left, align.right]).forEach(function (item) {
+                    ['media', align.left, align.right].forEach(function (item) {
                         el.removeClass(item);
                     });
 
@@ -168,7 +157,7 @@
                     }
 
                     if (el.getName() === 'figure') {
-                        el.addClass(type);
+                        el.addClass('media');
                     }
 
                     if (media.getName() !== name) {
