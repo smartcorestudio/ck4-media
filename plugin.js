@@ -249,8 +249,8 @@
             audio: {
                 element: 'audio',
                 mime: [
-                    'audio/aac', 'audio/flac', 'audio/mp3', 'audio/ogg', 'audio/wav', 'audio/wave', 'audio/webm',
-                    'audio/x-aac', 'audio/x-flac', 'audio/x-pn-wav', 'audio/x-wav'
+                    'audio/aac', 'audio/flac', 'audio/mpeg', 'audio/ogg', 'audio/wav', 'audio/wave', 'audio/webm',
+                    'audio/x-aac', 'audio/x-flac', 'audio/x-mpeg', 'audio/x-pn-wav', 'audio/x-wav'
                 ]
             },
             iframe: {
