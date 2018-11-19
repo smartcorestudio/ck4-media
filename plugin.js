@@ -104,7 +104,7 @@
                     // Media
                     if (media.hasAttribute('src')) {
                         media.setAttribute('src', CKEDITOR.media.getUrl(media.getAttribute('src')));
-                        widget.setData('type', CKEDITOR.media.getTypeFromUrl(media.getAttribute('src')));
+                        widget.setData('type', CKEDITOR.media.getTypeFromElement(media.getName()));
                     }
 
                     attr.forEach(function (item) {
